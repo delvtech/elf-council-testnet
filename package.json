@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
+    "merkletreejs": "^0.2.24",
     "tsc": "^2.0.3"
   },
   "main": "dist/types/index.js",
