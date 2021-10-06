@@ -7,24 +7,18 @@ import { deployLockingVault } from "src/scripts/deployLockingVault";
 import { deployOptimisticRewards } from "src/scripts/deployOptimisticRewards";
 import { deployTimelock } from "src/scripts/deployTimelock";
 import { deployVotingToken } from "src/scripts/deployVotingToken";
-import { CoreVoting } from "types/CoreVoting";
 import { SimpleProxy__factory } from "types/factories/SimpleProxy__factory";
-import { GSCVault } from "types/GSCVault";
-import { MockERC20 } from "types/MockERC20";
-import { OptimisticRewards } from "types/OptimisticRewards";
-import { SimpleProxy } from "types/SimpleProxy";
-import { Timelock } from "types/Timelock";
 
 const ONE_ETHER = ethers.utils.parseEther("1");
 
 export interface GovernanceContracts {
-  elementToken: MockERC20;
-  coreVoting: CoreVoting;
-  gscCoreVoting: CoreVoting;
-  gscVault: GSCVault;
-  timeLock: Timelock;
-  lockingVault: SimpleProxy;
-  optimisticRewardsVault: OptimisticRewards;
+  elementToken: string;
+  coreVoting: string;
+  gscCoreVoting: string;
+  gscVault: string;
+  timeLock: string;
+  lockingVault: string;
+  optimisticRewardsVault: string;
 }
 
 export async function deployGovernanace(
@@ -141,12 +135,12 @@ export async function deployGovernanace(
   console.log("set permissions for time gsc core voting");
 
   return {
-    elementToken: votingToken,
-    coreVoting,
-    gscCoreVoting,
-    gscVault,
-    timeLock,
-    lockingVault,
-    optimisticRewardsVault,
+    elementToken: votingToken.address,
+    coreVoting: coreVoting.address,
+    gscCoreVoting: gscCoreVoting.address,
+    gscVault: gscVault.address,
+    timeLock: timeLock.address,
+    lockingVault: lockingVault.address,
+    optimisticRewardsVault: optimisticRewardsVault.address,
   };
 }
