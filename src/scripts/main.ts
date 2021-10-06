@@ -1,6 +1,7 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import fs from "fs";
 import hre from "hardhat";
+import { AddressesJsonFile } from "src/addresses/AddressesJsonFile";
 import {
   deployGovernanace,
   GovernanceContracts,
@@ -24,18 +25,6 @@ main()
     process.exit(1);
   });
 
-interface AddressesJsonFile {
-  chainId: number;
-  addresses: {
-    elementToken: string;
-    coreVoting: string;
-    gscCoreVoting: string;
-    gscVault: string;
-    timeLock: string;
-    lockingVault: string;
-    optimisticRewardsVault: string;
-  };
-}
 function writeAddressesJson(governanceContracts: GovernanceContracts) {
   // Produce a schema-compliant testnet.addresses.json file
   const addressesJson: AddressesJsonFile = {
