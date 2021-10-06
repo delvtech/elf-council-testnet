@@ -1,13 +1,11 @@
 {
-  "name": "elf-contracts-typechain",
+  "name": "elf-council-typechain",
   "version": "1.0.0",
   "description": "",
   "dependencies": {
     "merkletreejs": "^0.2.24",
     "tsc": "^2.0.3"
   },
-  "main": "dist/types/index.js",
-  "types": "dist/types/index.d.ts",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-vyper": "^2.0.1",
