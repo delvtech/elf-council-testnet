@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "outDir": "./build/",
+    "baseUrl": "./",
+    "resolveJsonModule": true,
+    "paths": {
+      "src/*": [
+        "./src/*"
+      ],
+      "types/*": [
+        "./types/*"
+      ],
+    }
+  },
+  // Include/Exclude is for collections or groups of files or folders, etc..
+  "include": [
+    "./types/**/*",
+    "./src/**/*",
+  ],
+  // Specify separate files directly by their path
+  "files": [
+    "./hardhat.config.ts"
+  ]
+}

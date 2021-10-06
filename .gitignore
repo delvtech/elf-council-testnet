@@ -1,0 +1,12 @@
+.DS_Store
+node_modules
+cache
+artifacts
+
+# don't check in the compiled typescript factories
+compiled
+
+# we bundle in the dist/ so it's easy to use this repo as a npm package
+!dist/types/
+
+elf-council
