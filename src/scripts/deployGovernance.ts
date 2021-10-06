@@ -7,14 +7,30 @@ import { deployLockingVault } from "src/scripts/deployLockingVault";
 import { deployOptimisticRewards } from "src/scripts/deployOptimisticRewards";
 import { deployTimelock } from "src/scripts/deployTimelock";
 import { deployVotingToken } from "src/scripts/deployVotingToken";
+import { CoreVoting } from "types/CoreVoting";
 import { SimpleProxy__factory } from "types/factories/SimpleProxy__factory";
+import { GSCVault } from "types/GSCVault";
+import { MockERC20 } from "types/MockERC20";
+import { OptimisticRewards } from "types/OptimisticRewards";
+import { SimpleProxy } from "types/SimpleProxy";
+import { Timelock } from "types/Timelock";
 
 const ONE_ETHER = ethers.utils.parseEther("1");
+
+export interface GovernanceContracts {
+  elementToken: MockERC20;
+  coreVoting: CoreVoting;
+  gscCoreVoting: CoreVoting;
+  gscVault: GSCVault;
+  timeLock: Timelock;
+  lockingVault: SimpleProxy;
+  optimisticRewardsVault: OptimisticRewards;
+}
 
 export async function deployGovernanace(
   signer: SignerWithAddress,
   signers: SignerWithAddress[]
-) {
+): Promise<GovernanceContracts> {
   const votingToken = await deployVotingToken(signer);
   console.log("deployed voting token");
 
@@ -90,7 +106,7 @@ export async function deployGovernanace(
     });
   }
   const merkleTree = await getMerkleTree(accounts);
-  const optimisticRewards = await deployOptimisticRewards(
+  const optimisticRewardsVault = await deployOptimisticRewards(
     signer,
     coreVoting.address,
     merkleTree,
@@ -101,7 +117,7 @@ export async function deployGovernanace(
 
   // add approved governance vaults. signer is still the owner so we can set these
   await coreVoting.changeVaultStatus(lockingVault.address, true);
-  await coreVoting.changeVaultStatus(optimisticRewards.address, true);
+  await coreVoting.changeVaultStatus(optimisticRewardsVault.address, true);
   console.log("added vaults to core voting");
 
   // finalize permissions for coreVoting contract, gscCoreVoting is authorized to make proposoals
@@ -123,4 +139,14 @@ export async function deployGovernanace(
   await gscCoreVoting.authorize(gscVault.address);
   await gscCoreVoting.setOwner(timeLock.address);
   console.log("set permissions for time gsc core voting");
+
+  return {
+    elementToken: votingToken,
+    coreVoting,
+    gscCoreVoting,
+    gscVault,
+    timeLock,
+    lockingVault,
+    optimisticRewardsVault,
+  };
 }
