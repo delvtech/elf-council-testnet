@@ -5,7 +5,7 @@ import addressesJson from "src/addresses/addresses.json";
 getTokenList(
   addressesJson,
   "Testnet token list",
-  "src/tokenlist/tokenlist.json"
+  "src/tokenlist/testnet.tokenlist.json"
 )
   .then(() => process.exit(0))
   .catch((error: Error) => {

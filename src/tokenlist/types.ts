@@ -1,1 +1,3 @@
-export enum TokenListTag {}
+export enum TokenListTag {
+  ELEMENT_GOVERNANCE_TOKEN = "element",
+}

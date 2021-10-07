@@ -1,5 +1,6 @@
 import { TokenInfo } from "@uniswap/token-lists";
 import hre from "hardhat";
+import { TokenListTag } from "src/tokenlist/types";
 import { ERC20Permit__factory } from "types/factories/ERC20Permit__factory";
 
 export const { provider } = hre.ethers;
@@ -19,6 +20,6 @@ export async function getVotingTokenInfo(
     symbol,
     decimals,
     name,
-    tags: [],
+    tags: [TokenListTag.ELEMENT_GOVERNANCE_TOKEN],
   };
 }
