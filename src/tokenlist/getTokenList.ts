@@ -2,6 +2,7 @@ import { TokenList } from "@uniswap/token-lists";
 import fs from "fs";
 import { AddressesJsonFile } from "src/addresses/AddressesJsonFile";
 import { getCoreVotingInfo } from "src/tokenlist/getCoreVotingInfo";
+import { getGscVaultInfo } from "src/tokenlist/getGscVaultInfo";
 import { getLockingVaultInfo } from "src/tokenlist/getLockingVaultInfo";
 import { getOptimisticRewardsVaultInfo } from "src/tokenlist/getOptimisticRewardsVaultInfo";
 import { getVotingTokenInfo } from "src/tokenlist/getVotingTokenInfo";
@@ -77,6 +78,7 @@ export async function getTokenList(
       gscCoreVotingInfo,
       lockingVaultInfo,
       optimisticRewardsVaultInfo,
+      gscVaultInfo,
     ],
   };
 
