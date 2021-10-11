@@ -12,7 +12,7 @@ export async function getTokenList(
 ) {
   const {
     chainId,
-    addresses: { elementToken, coreVoting },
+    addresses: { elementToken, coreVoting, gscCoreVoting },
   } = addressesJson;
 
   const elementTokenInfo = await getVotingTokenInfo(chainId, elementToken);
@@ -20,7 +20,15 @@ export async function getTokenList(
   const coreVotingInfo = await getCoreVotingInfo(
     chainId,
     coreVoting,
-    "Element Core Voting Contract"
+    "Element Core Voting Contract",
+    "ELFI-CVC"
+  );
+
+  const gscCoreVotingInfo = await getCoreVotingInfo(
+    chainId,
+    coreVoting,
+    "Element GSC Core Voting Contract",
+    "ELFI-GSC-CVC"
   );
 
   const tokenList: TokenList = {
@@ -33,7 +41,7 @@ export async function getTokenList(
       minor: 1,
       patch: 0,
     },
-    tokens: [elementTokenInfo, coreVotingInfo],
+    tokens: [elementTokenInfo, coreVotingInfo, gscCoreVotingInfo],
   };
 
   const tokenListString = JSON.stringify(tokenList, null, 2);

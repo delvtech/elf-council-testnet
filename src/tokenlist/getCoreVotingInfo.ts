@@ -8,7 +8,8 @@ export const { provider } = hre.ethers;
 export async function getCoreVotingInfo(
   chainId: number,
   tokenAddress: string,
-  name: string
+  name: string,
+  symbol: string
 ): Promise<TokenInfo> {
   const coreVotingContract = CoreVoting__factory.connect(
     tokenAddress,
@@ -33,7 +34,7 @@ export async function getCoreVotingInfo(
     address: tokenAddress,
     name,
     decimals: 0,
-    symbol: "ELFI CVC",
+    symbol,
     extensions: {
       baseQuorum: formatEther(baseQuorum.toString()),
       lockDuration: formatEther(lockDuration.toString()),
