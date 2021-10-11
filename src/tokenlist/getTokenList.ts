@@ -1,6 +1,7 @@
 import { TokenList } from "@uniswap/token-lists";
 import fs from "fs";
 import { AddressesJsonFile } from "src/addresses/AddressesJsonFile";
+import { getCoreVotingInfo } from "src/tokenlist/getCoreVotingInfo";
 import { getVotingTokenInfo } from "src/tokenlist/getVotingTokenInfo";
 import { tags } from "src/tokenlist/tags";
 
@@ -11,10 +12,16 @@ export async function getTokenList(
 ) {
   const {
     chainId,
-    addresses: { elementToken },
+    addresses: { elementToken, coreVoting },
   } = addressesJson;
 
   const elementTokenInfo = await getVotingTokenInfo(chainId, elementToken);
+
+  const coreVotingInfo = await getCoreVotingInfo(
+    chainId,
+    coreVoting,
+    "Element Core Voting Contract"
+  );
 
   const tokenList: TokenList = {
     name,
@@ -22,12 +29,11 @@ export async function getTokenList(
     tags,
     timestamp: new Date().toISOString(),
     version: {
-      // TODO: implement this
       major: 0,
-      minor: 0,
+      minor: 1,
       patch: 0,
     },
-    tokens: [elementTokenInfo],
+    tokens: [elementTokenInfo, coreVotingInfo],
   };
 
   const tokenListString = JSON.stringify(tokenList, null, 2);
