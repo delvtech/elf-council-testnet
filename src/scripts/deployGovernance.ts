@@ -25,6 +25,10 @@ export async function deployGovernanace(
   signer: SignerWithAddress,
   signers: SignerWithAddress[]
 ): Promise<GovernanceContracts> {
+  console.log(
+    "signers",
+    signers.map((s) => s.address)
+  );
   const votingToken = await deployVotingToken(signer);
   console.log("deployed voting token");
 
