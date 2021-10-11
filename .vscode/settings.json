@@ -10,5 +10,6 @@
       ],
       "url": "https://uniswap.org/tokenlist.schema.json"
     },
-  ]
+  ],
+  "solidity.defaultCompiler": "localFile"
 }
