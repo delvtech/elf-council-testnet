@@ -36,10 +36,10 @@ export async function getCoreVotingInfo(
     decimals: 0,
     symbol,
     extensions: {
-      baseQuorum: formatEther(baseQuorum.toString()),
-      lockDuration: formatEther(lockDuration.toString()),
-      minProposalPower: formatEther(minProposalPower.toString()),
-      extraVoteTime: formatEther(extraVoteTime.toString()),
+      baseQuorum: formatEther(baseQuorum),
+      lockDuration: formatEther(lockDuration),
+      minProposalPower: formatEther(minProposalPower),
+      extraVoteTime: formatEther(extraVoteTime),
     },
     tags: [TokenListTag.ELEMENT_GOVERNANCE_TOKEN],
   };

@@ -31,6 +31,8 @@ export async function getTokenList(
     "ELFI-GSC-CVC"
   );
 
+  const lockingVaultInfo = await getLockingVaultInfo();
+
   const tokenList: TokenList = {
     name,
     logoURI: "https://element.fi/logo.svg",
