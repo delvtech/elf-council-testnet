@@ -2,6 +2,8 @@ import { TokenList } from "@uniswap/token-lists";
 import fs from "fs";
 import { AddressesJsonFile } from "src/addresses/AddressesJsonFile";
 import { getCoreVotingInfo } from "src/tokenlist/getCoreVotingInfo";
+import { getLockingVaultInfo } from "src/tokenlist/getLockingVaultInfo";
+import { getOptimisticRewardsVaultInfo } from "src/tokenlist/getOptimisticRewardsVaultInfo";
 import { getVotingTokenInfo } from "src/tokenlist/getVotingTokenInfo";
 import { tags } from "src/tokenlist/tags";
 
@@ -12,7 +14,14 @@ export async function getTokenList(
 ) {
   const {
     chainId,
-    addresses: { elementToken, coreVoting, gscCoreVoting },
+    addresses: {
+      elementToken,
+      coreVoting,
+      gscCoreVoting,
+      lockingVault,
+      optimisticRewardsVault,
+      gscVault,
+    },
   } = addressesJson;
 
   const elementTokenInfo = await getVotingTokenInfo(chainId, elementToken);
@@ -26,12 +35,31 @@ export async function getTokenList(
 
   const gscCoreVotingInfo = await getCoreVotingInfo(
     chainId,
-    coreVoting,
+    gscCoreVoting,
     "Element GSC Core Voting Contract",
     "ELFI-GSC-CVC"
   );
 
-  const lockingVaultInfo = await getLockingVaultInfo();
+  const lockingVaultInfo = await getLockingVaultInfo(
+    chainId,
+    lockingVault,
+    "Element Locking Vault",
+    "ELFI-LV"
+  );
+
+  const optimisticRewardsVaultInfo = await getOptimisticRewardsVaultInfo(
+    chainId,
+    optimisticRewardsVault,
+    "Element Optimistic Rewards Vault",
+    "ELFI-ORV"
+  );
+
+  const gscVaultInfo = await getGscVaultInfo(
+    chainId,
+    gscVault,
+    "Element Governance Steering Committee Vault",
+    "ELFI-GSC"
+  );
 
   const tokenList: TokenList = {
     name,
@@ -43,7 +71,13 @@ export async function getTokenList(
       minor: 1,
       patch: 0,
     },
-    tokens: [elementTokenInfo, coreVotingInfo, gscCoreVotingInfo],
+    tokens: [
+      elementTokenInfo,
+      coreVotingInfo,
+      gscCoreVotingInfo,
+      lockingVaultInfo,
+      optimisticRewardsVaultInfo,
+    ],
   };
 
   const tokenListString = JSON.stringify(tokenList, null, 2);

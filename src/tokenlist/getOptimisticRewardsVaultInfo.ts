@@ -1,0 +1,63 @@
+import { TokenInfo } from "@uniswap/token-lists";
+import { formatEther } from "ethers/lib/utils";
+import hre from "hardhat";
+import { TokenListTag } from "src/tokenlist/types";
+import { OptimisticRewards__factory } from "types";
+
+export const { provider } = hre.ethers;
+export async function getOptimisticRewardsVaultInfo(
+  chainId: number,
+  tokenAddress: string,
+  name: string,
+  symbol: string
+): Promise<TokenInfo> {
+  const optimisticRewardsVaultContract = OptimisticRewards__factory.connect(
+    tokenAddress,
+    provider
+  );
+
+  const pendingRootPromise = optimisticRewardsVaultContract.pendingRoot();
+  const proposalTimePromise = optimisticRewardsVaultContract.proposalTime();
+  const proposerPromise = optimisticRewardsVaultContract.proposer();
+  const challengePeriodPromise =
+    optimisticRewardsVaultContract.challengePeriod();
+  const rewardsRootPromise = optimisticRewardsVaultContract.rewardsRoot();
+  const lockingVaultPromise = optimisticRewardsVaultContract.lockingVault();
+  const tokenPromise = optimisticRewardsVaultContract.token();
+
+  const [
+    pendingRoot,
+    proposalTime,
+    proposer,
+    challengePeriod,
+    rewardsRoot,
+    lockingVault,
+    token,
+  ] = await Promise.all([
+    pendingRootPromise,
+    proposalTimePromise,
+    proposerPromise,
+    challengePeriodPromise,
+    rewardsRootPromise,
+    lockingVaultPromise,
+    tokenPromise,
+  ]);
+
+  return {
+    chainId,
+    address: tokenAddress,
+    name,
+    decimals: 0,
+    symbol,
+    extensions: {
+      pendingRoot,
+      proposalTime: formatEther(proposalTime),
+      proposer,
+      challengePeriod: formatEther(challengePeriod),
+      rewardsRoot,
+      lockingVault,
+      token,
+    },
+    tags: [TokenListTag.ELEMENT_GOVERNANCE_TOKEN],
+  };
+}
