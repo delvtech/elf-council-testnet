@@ -6,7 +6,6 @@ import { getGscVaultInfo } from "src/tokenlist/getGscVaultInfo";
 import { getLockingVaultInfo } from "src/tokenlist/getLockingVaultInfo";
 import { getOptimisticRewardsVaultInfo } from "src/tokenlist/getOptimisticRewardsVaultInfo";
 import { getVotingTokenInfo } from "src/tokenlist/getVotingTokenInfo";
-import { tags } from "src/tokenlist/tags";
 
 export async function getTokenList(
   addressesJson: AddressesJsonFile,
@@ -60,7 +59,6 @@ export async function getTokenList(
   const tokenList: TokenList = {
     name,
     logoURI: "https://element.fi/logo.svg",
-    tags,
     timestamp: new Date().toISOString(),
     version: {
       major: 0,

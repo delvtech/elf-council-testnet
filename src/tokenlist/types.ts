@@ -3,10 +3,6 @@
  */
 import { TokenInfo } from "@uniswap/token-lists";
 
-export enum TokenListTag {
-  ELEMENT_GOVERNANCE_TOKEN = "element",
-}
-
 export type ElementGovernanceTokenInfo = TokenInfo;
 
 export interface CoreVotingContractTokenInfo extends TokenInfo {
