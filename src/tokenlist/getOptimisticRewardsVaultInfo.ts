@@ -8,8 +8,7 @@ export const { provider } = hre.ethers;
 export async function getOptimisticRewardsVaultInfo(
   chainId: number,
   tokenAddress: string,
-  name: string,
-  symbol: string
+  name: string
 ): Promise<TokenInfo> {
   const optimisticRewardsVaultContract = OptimisticRewards__factory.connect(
     tokenAddress,
@@ -48,16 +47,15 @@ export async function getOptimisticRewardsVaultInfo(
     address: tokenAddress,
     name,
     decimals: 0,
-    symbol,
+    symbol: "",
     extensions: {
       pendingRoot,
-      proposalTime: formatEther(proposalTime),
+      proposalTime: proposalTime.toNumber(),
       proposer,
-      challengePeriod: formatEther(challengePeriod),
+      challengePeriod: challengePeriod.toNumber(),
       rewardsRoot,
       lockingVault,
       token,
     },
-    tags: [TokenListTag.ELEMENT_GOVERNANCE_TOKEN],
   };
 }

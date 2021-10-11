@@ -1,15 +1,12 @@
 import { TokenInfo } from "@uniswap/token-lists";
-import { formatEther } from "ethers/lib/utils";
 import hre from "hardhat";
-import { TokenListTag } from "src/tokenlist/types";
 import { LockingVault__factory } from "types";
 
 export const { provider } = hre.ethers;
 export async function getLockingVaultInfo(
   chainId: number,
   tokenAddress: string,
-  name: string,
-  symbol: string
+  name: string
 ): Promise<TokenInfo> {
   const lockingVaultContract = LockingVault__factory.connect(
     tokenAddress,
@@ -29,11 +26,10 @@ export async function getLockingVaultInfo(
     address: tokenAddress,
     name,
     decimals: 0,
-    symbol,
+    symbol: "",
     extensions: {
       token,
-      staleBlockLag: formatEther(staleBlockLag),
+      staleBlockLag: staleBlockLag.toNumber(),
     },
-    tags: [TokenListTag.ELEMENT_GOVERNANCE_TOKEN],
   };
 }

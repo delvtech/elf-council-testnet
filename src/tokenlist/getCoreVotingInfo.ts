@@ -1,15 +1,12 @@
 import { TokenInfo } from "@uniswap/token-lists";
-import { formatEther } from "ethers/lib/utils";
 import hre from "hardhat";
-import { TokenListTag } from "src/tokenlist/types";
 import { CoreVoting__factory } from "types";
 
 export const { provider } = hre.ethers;
 export async function getCoreVotingInfo(
   chainId: number,
   tokenAddress: string,
-  name: string,
-  symbol: string
+  name: string
 ): Promise<TokenInfo> {
   const coreVotingContract = CoreVoting__factory.connect(
     tokenAddress,
@@ -34,13 +31,12 @@ export async function getCoreVotingInfo(
     address: tokenAddress,
     name,
     decimals: 0,
-    symbol,
+    symbol: "",
     extensions: {
-      baseQuorum: formatEther(baseQuorum),
-      lockDuration: formatEther(lockDuration),
-      minProposalPower: formatEther(minProposalPower),
-      extraVoteTime: formatEther(extraVoteTime),
+      baseQuorum: baseQuorum.toNumber(),
+      lockDuration: lockDuration.toNumber(),
+      minProposalPower: minProposalPower.toNumber(),
+      extraVoteTime: extraVoteTime.toNumber(),
     },
-    tags: [TokenListTag.ELEMENT_GOVERNANCE_TOKEN],
   };
 }

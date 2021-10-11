@@ -30,36 +30,31 @@ export async function getTokenList(
   const coreVotingInfo = await getCoreVotingInfo(
     chainId,
     coreVoting,
-    "Element Core Voting Contract",
-    "ELFI-CVC"
+    "Element Core Voting Contract"
   );
 
   const gscCoreVotingInfo = await getCoreVotingInfo(
     chainId,
     gscCoreVoting,
-    "Element GSC Core Voting Contract",
-    "ELFI-GSC-CVC"
+    "Element GSC Core Voting Contract"
   );
 
   const lockingVaultInfo = await getLockingVaultInfo(
     chainId,
     lockingVault,
-    "Element Locking Vault",
-    "ELFI-LV"
+    "Element Locking Vault"
   );
 
   const optimisticRewardsVaultInfo = await getOptimisticRewardsVaultInfo(
     chainId,
     optimisticRewardsVault,
-    "Element Optimistic Rewards Vault",
-    "ELFI-ORV"
+    "Element Optimistic Rewards Vault"
   );
 
   const gscVaultInfo = await getGscVaultInfo(
     chainId,
     gscVault,
-    "Element Governance Steering Committee Vault",
-    "ELFI-GSC"
+    "Element Governance Steering Committee Vault"
   );
 
   const tokenList: TokenList = {
