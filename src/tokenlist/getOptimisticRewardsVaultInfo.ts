@@ -1,7 +1,6 @@
 import { TokenInfo } from "@uniswap/token-lists";
 import { formatEther } from "ethers/lib/utils";
 import hre from "hardhat";
-import { TokenListTag } from "src/tokenlist/types";
 import { OptimisticRewards__factory } from "types";
 
 export const { provider } = hre.ethers;
