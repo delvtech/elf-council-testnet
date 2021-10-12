@@ -5,9 +5,12 @@ import { Request, Response } from "express";
 import { getMerkleTree } from "../helpers/merkle";
 import leaves from "../leaves.json";
 
-interface Proof {
-  address: string;
-  proof: string[];
+interface MerkleProofResponse {
+  leaf: {
+    address: string;
+    value: string;
+  };
+  proof: number[][];
 }
 
 interface Account {
@@ -34,11 +37,13 @@ export const getMerkleProof = async (req: Request, res: Response) => {
     const merkleTree = await getMerkleTree(accounts);
     const leaf = merkleTree.getLeaves()[accountIndex];
     // serialize the data, client side will need to convert back to buffer's using Buffer.from(data)
-    const proof = merkleTree.getProof(leaf).map((p) => p.data.toJSON());
+    const proof = merkleTree.getProof(leaf).map((p) => p.data.toJSON().data);
 
-    const response = {
-      address,
-      amount: account.value,
+    const response: MerkleProofResponse = {
+      leaf: {
+        address,
+        value: account.value,
+      },
       proof,
     };
     return res.status(200).send(response);
