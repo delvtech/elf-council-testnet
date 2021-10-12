@@ -3,11 +3,7 @@ import { formatEther, parseEther } from "ethers/lib/utils";
 import hre, { ethers } from "hardhat";
 import addressesJson from "src/addresses/addresses.json";
 import { getMerkleTree } from "src/merkle";
-import {
-  ERC20Permit__factory,
-  MockERC20__factory,
-  OptimisticRewards__factory,
-} from "types";
+import { MockERC20__factory, OptimisticRewards__factory } from "types";
 
 const ONE_ETHER = ethers.utils.parseEther("1");
 async function testClaiming() {
