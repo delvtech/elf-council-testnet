@@ -41,6 +41,7 @@
     "build-tokenlist": "npx hardhat run src/tokenlist/buildTokenList.ts --network localhost --no-compile",
     "load-contracts": "sh scripts/load-elf-council.sh",
     "deploy-contracts": "npx hardhat run src/scripts/main.ts --network localhost --no-compile",
-    "test-claiming": "npx hardhat run src/scripts/testClaiming.ts --network localhost --no-compile"
+    "test-claiming": "npx hardhat run src/scripts/testClaiming.ts --network localhost --no-compile",
+    "test-proposal": "npx hardhat run src/scripts/testProposal.ts --network localhost --no-compile"
   }
 }
