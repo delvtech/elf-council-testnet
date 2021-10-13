@@ -106,6 +106,7 @@ export async function deployGovernanace(
   const merkleTree = await getMerkleTree(accounts);
   const optimisticRewardsVault = await deployOptimisticRewards(
     signer,
+    votingToken.address,
     coreVoting.address,
     merkleTree,
     votingToken.address,
