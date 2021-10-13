@@ -20,7 +20,7 @@
   // Include/Exclude is for collections or groups of files or folders, etc..
   "include": [
     "./types/**/*",
-    "./src/**/*", "server/server",
+    "./src/**/*",
   ],
   // Specify separate files directly by their path
   "files": [
