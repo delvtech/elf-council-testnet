@@ -25,7 +25,7 @@ async function testClaiming() {
       value: ONE_ETHER,
     });
   }
-  const merkleTree = await getMerkleTree(accounts);
+  const merkleTree = getMerkleTree(accounts);
   const root = merkleTree.getHexRoot();
   const leaves = merkleTree.getLeaves();
   const merkleProof = merkleTree.getHexProof(leaves[0]);

@@ -103,7 +103,7 @@ export async function deployGovernanace(
       value: ONE_ETHER,
     });
   }
-  const merkleTree = await getMerkleTree(accounts);
+  const merkleTree = getMerkleTree(accounts);
   const optimisticRewardsVault = await deployOptimisticRewards(
     signer,
     votingToken.address,

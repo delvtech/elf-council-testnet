@@ -61,7 +61,7 @@ async function testProposal() {
     });
   }
 
-  const merkleTree = await getMerkleTree(accounts);
+  const merkleTree = getMerkleTree(accounts);
 
   const coreVotingContract = CoreVoting__factory.connect(coreVoting, signer);
   const newWaitTime = 123456;

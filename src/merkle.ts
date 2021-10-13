@@ -6,17 +6,15 @@ export interface Account {
   value: BigNumberish;
 }
 
-export async function getMerkleTree(accounts: Account[]) {
-  const leaves = await Promise.all(
-    accounts.map((account) => hashAccount(account))
-  );
+export function getMerkleTree(accounts: Account[]) {
+  const leaves = accounts.map((account) => hashAccount(account));
   return new MerkleTree(leaves, keccak256Custom, {
     hashLeaves: false,
     sortPairs: true,
   });
 }
 
-export async function hashAccount(account: Account) {
+export function hashAccount(account: Account) {
   return ethers.utils.solidityKeccak256(
     ["address", "uint256"],
     [account.address, account.value]
