@@ -28,7 +28,7 @@ async function testClaiming() {
   const merkleTree = await getMerkleTree(accounts);
   const root = merkleTree.getHexRoot();
   const leaves = merkleTree.getLeaves();
-  const merkleProof = merkleTree.getProof(leaves[0]);
+  const merkleProof = merkleTree.getHexProof(leaves[0]);
 
   console.log("root", root);
   console.log("leaves", leaves);
@@ -55,7 +55,7 @@ async function testClaiming() {
   const rewardsTx = await rewardsContract.claim(
     ONE_ETHER,
     ONE_ETHER,
-    merkleProof.map((p) => p.data),
+    merkleProof,
     signer.address
   );
   await rewardsTx.wait(1);
