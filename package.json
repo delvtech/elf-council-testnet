@@ -18,7 +18,7 @@
     "@types/ethereumjs-abi": "^0.6.3",
     "@types/mocha": "^9.0.0",
     "@types/node": "^14.17.20",
-    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "chai": "^4.3.4",
     "eslint": "^7.32.0",
@@ -40,7 +40,7 @@
     "build-contracts": "sh scripts/build-contracts.sh",
     "build-tokenlist": "npx hardhat run src/tokenlist/buildTokenList.ts --network localhost --no-compile",
     "load-contracts": "sh scripts/load-elf-council.sh",
-    "deploy-contracts": "npx hardhat run src/scripts/main.ts --network localhost --no-compile",
+    "deploy-contracts": "npx hardhat run src/scripts/main.ts --network localhost --no-compile && npm run build-tokenlist",
     "test-claiming": "npx hardhat run src/scripts/testClaiming.ts --network localhost --no-compile",
     "test-proposal": "npx hardhat run src/scripts/testProposal.ts --network localhost --no-compile"
   }
