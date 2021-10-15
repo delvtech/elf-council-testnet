@@ -29,7 +29,7 @@
     "prettier-plugin-solidity": "^1.0.0-alpha.58",
     "solhint-plugin-prettier": "^0.0.5",
     "ts-generator": "^0.1.1",
-    "ts-node": "^10.2.1",
+    "ts-node": "^10.3.0",
     "tsconfig-paths": "^3.11.0",
     "typechain": "^5.1.2",
     "typechain-target-ethers-v5": "^5.0.1",
@@ -40,7 +40,7 @@
     "build-contracts": "sh scripts/build-contracts.sh",
     "build-tokenlist": "npx hardhat run src/tokenlist/buildTokenList.ts --network localhost --no-compile",
     "load-contracts": "sh scripts/load-elf-council.sh",
-    "deploy-contracts": "npx hardhat run src/scripts/main.ts --network localhost --no-compile",
+    "deploy-contracts": "npx hardhat run src/scripts/main.ts --network localhost --no-compile && npm run build-tokenlist",
     "test-claiming": "npx hardhat run src/scripts/testClaiming.ts --network localhost --no-compile",
     "test-proposal": "npx hardhat run src/scripts/testProposal.ts --network localhost --no-compile"
   }
