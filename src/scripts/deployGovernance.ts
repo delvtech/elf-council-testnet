@@ -1,15 +1,20 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { BigNumber } from "ethers";
+import { parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
-import { getMerkleTree } from "src/merkle";
+import { Account, getMerkleTree } from "src/merkle";
 import { deployCoreVoting } from "src/scripts/deployCoreVoting";
 import { deployGSCVault } from "src/scripts/deployGSCVault";
 import { deployLockingVault } from "src/scripts/deployLockingVault";
 import { deployOptimisticRewards } from "src/scripts/deployOptimisticRewards";
 import { deployTimelock } from "src/scripts/deployTimelock";
 import { deployVotingToken } from "src/scripts/deployVotingToken";
+import { MockERC20__factory } from "types/factories/MockERC20__factory";
 import { SimpleProxy__factory } from "types/factories/SimpleProxy__factory";
+import { MockERC20 } from "types/MockERC20";
+import { OptimisticRewards } from "types/OptimisticRewards";
 
-const ONE_ETHER = ethers.utils.parseEther("1");
+const FIFTY_ETHER = parseEther("50");
 
 export interface GovernanceContracts {
   elementToken: string;
@@ -96,23 +101,31 @@ export async function deployGovernanace(
   const lockingVault = lockingVaultProxy.attach(lockingVaultProxy.address);
   console.log("deployed locking vault");
 
-  const accounts = [];
+  const accounts: Account[] = [];
   for (const i in signers) {
     accounts.push({
       address: signers[i].address,
-      value: ONE_ETHER,
+      value: FIFTY_ETHER,
     });
   }
+
   const merkleTree = getMerkleTree(accounts);
   const optimisticRewardsVault = await deployOptimisticRewards(
     signer,
     votingToken.address,
     coreVoting.address,
     merkleTree,
-    votingToken.address,
     lockingVault.address
   );
   console.log("deployed rewards vault");
+
+  await giveRewardsVaultTokens(
+    accounts,
+    votingToken,
+    signer,
+    optimisticRewardsVault
+  );
+  console.log("rewards vault seeded with element tokens ");
 
   // add approved governance vaults. signer is still the owner so we can set these
   await coreVoting.changeVaultStatus(lockingVault.address, true);
@@ -148,4 +161,21 @@ export async function deployGovernanace(
     lockingVault: lockingVault.address,
     optimisticRewardsVault: optimisticRewardsVault.address,
   };
+}
+async function giveRewardsVaultTokens(
+  accounts: Account[],
+  votingToken: MockERC20,
+  signer: SignerWithAddress,
+  optimisticRewardsVault: OptimisticRewards
+) {
+  const totalValueBN = accounts.reduce((total: BigNumber, account: Account) => {
+    const { value } = account;
+    return total.add(value);
+  }, BigNumber.from(0));
+  const tokenContract = MockERC20__factory.connect(votingToken.address, signer);
+  const setBalanceTx = await tokenContract.setBalance(
+    optimisticRewardsVault.address,
+    totalValueBN
+  );
+  await setBalanceTx.wait(1);
 }
