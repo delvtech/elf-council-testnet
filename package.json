@@ -4,6 +4,8 @@
   "description": "",
   "dependencies": {
     "@uniswap/token-lists": "^1.0.0-beta.26",
+    "ethernal": "^0.8.0",
+    "hardhat-ethernal": "^0.3.10",
     "merkletreejs": "^0.2.24",
     "tsc": "^2.0.3"
   },
