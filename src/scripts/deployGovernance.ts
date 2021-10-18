@@ -14,7 +14,7 @@ import { SimpleProxy__factory } from "types/factories/SimpleProxy__factory";
 import { MockERC20 } from "types/MockERC20";
 import { OptimisticRewards } from "types/OptimisticRewards";
 
-const FIFTY_ETHER = parseEther("50");
+const FIFTY_VOTING_TOKENS = parseEther("50");
 
 export interface GovernanceContracts {
   elementToken: string;
@@ -105,7 +105,7 @@ export async function deployGovernanace(
   for (const i in signers) {
     accounts.push({
       address: signers[i].address,
-      value: FIFTY_ETHER,
+      value: FIFTY_VOTING_TOKENS,
     });
   }
 
