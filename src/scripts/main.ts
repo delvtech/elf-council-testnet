@@ -3,6 +3,9 @@ import { Signer } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import fs from "fs";
 import hre from "hardhat";
+// This is imported so that it will install the plugin on the hre
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import ethernal from "hardhat-ethernal";
 import { AddressesJsonFile } from "src/addresses/AddressesJsonFile";
 import {
   deployGovernanace,
@@ -14,7 +17,7 @@ async function main() {
   const signers: SignerWithAddress[] = await hre.ethers.getSigners();
   const [signer] = signers;
 
-  const governanceContracts = await deployGovernanace(signer, signers);
+  const governanceContracts = await deployGovernanace(hre, signer, signers);
 
   const accounts = signers.map((s) => s.address);
   const { elementToken } = governanceContracts;

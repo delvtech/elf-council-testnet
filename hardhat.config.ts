@@ -4,6 +4,8 @@ import "tsconfig-paths/register";
 import "@nomiclabs/hardhat-waffle";
 // Typechain support for hardhat
 import "@typechain/hardhat";
+// Ethernal plugin - a blockchain / contract explorer for private testnets
+import "hardhat-ethernal";
 
 import { HardhatUserConfig } from "hardhat/config";
 

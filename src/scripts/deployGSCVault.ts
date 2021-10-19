@@ -1,8 +1,10 @@
 import { BigNumberish, Signer } from "ethers";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { GSCVault__factory } from "types/factories/GSCVault__factory";
 import { GSCVault } from "types/GSCVault";
 
 export async function deployGSCVault(
+  hre: HardhatRuntimeEnvironment,
   signer: Signer,
   coreVotingAddress: string,
   votingPowerBound: BigNumberish,
@@ -14,6 +16,10 @@ export async function deployGSCVault(
     votingPowerBound,
     governanceOwnerAddress
   );
+  await hre.ethernal.push({
+    name: "GSCVault",
+    address: GSCContract.address,
+  });
 
   return GSCContract;
 }
