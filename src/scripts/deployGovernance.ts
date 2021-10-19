@@ -2,6 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BigNumber } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { Account, getMerkleTree } from "src/merkle";
 import { deployCoreVoting } from "src/scripts/deployCoreVoting";
 import { deployGSCVault } from "src/scripts/deployGSCVault";
@@ -10,7 +11,6 @@ import { deployOptimisticRewards } from "src/scripts/deployOptimisticRewards";
 import { deployTimelock } from "src/scripts/deployTimelock";
 import { deployVotingToken } from "src/scripts/deployVotingToken";
 import { MockERC20__factory } from "types/factories/MockERC20__factory";
-import { SimpleProxy__factory } from "types/factories/SimpleProxy__factory";
 import { MockERC20 } from "types/MockERC20";
 import { OptimisticRewards } from "types/OptimisticRewards";
 
@@ -27,6 +27,7 @@ export interface GovernanceContracts {
 }
 
 export async function deployGovernanace(
+  hre: HardhatRuntimeEnvironment,
   signer: SignerWithAddress,
   signers: SignerWithAddress[]
 ): Promise<GovernanceContracts> {
@@ -34,11 +35,12 @@ export async function deployGovernanace(
     "signers",
     signers.map((s) => s.address)
   );
-  const votingToken = await deployVotingToken(signer);
+  const votingToken = await deployVotingToken(hre, signer);
   console.log("deployed voting token");
 
   // deploy core voting contract, we'll have to fill in address values later
   const coreVoting = await deployCoreVoting(
+    hre,
     signer,
     [],
     signer.address,
@@ -51,9 +53,10 @@ export async function deployGovernanace(
 
   // deploy the core voting vault controlled by the GSC Vault
   const gscCoreVoting = await deployCoreVoting(
+    hre,
     signer,
     [],
-    // QUESTION: setting the singer here to the timelock owner here so I can use 'authorize' later.
+    // QUESTION: setting the signer here to the timelock owner here so I can use 'authorize' later.
     // is this right?
     signer.address,
     0,
@@ -63,6 +66,7 @@ export async function deployGovernanace(
   console.log("deployed empty gsc core voting");
 
   const timeLock = await deployTimelock(
+    hre,
     signer,
     0,
     signer.address,
@@ -71,6 +75,7 @@ export async function deployGovernanace(
   console.log("deployed timelock");
 
   const gscVault = await deployGSCVault(
+    hre,
     signer,
     gscCoreVoting.address,
     // QUESTION what is the power bound?  what's a good value here?
@@ -79,27 +84,14 @@ export async function deployGovernanace(
   );
   console.log("deployed gsc vault");
 
-  // QUESTION do I need to use a wallet here?
-  // const { provider } = waffle;
-  // const [wallet] = provider.getWallets();
-  const proxyDeployer = new SimpleProxy__factory(signer);
-  console.log("deployed proxy vault");
-
-  const lockingVaultBase = await deployLockingVault(
+  // deploy locking vault behind a proxy so it's upgradeable
+  const lockingVault = await deployLockingVault(
+    hre,
     signer,
     votingToken.address,
+    timeLock.address,
     10000
   );
-  console.log("deployed locking vault base");
-
-  const lockingVaultProxy = await proxyDeployer.deploy(
-    timeLock.address,
-    lockingVaultBase.address
-  );
-
-  console.log("deployed locking vault proxy");
-  const lockingVault = lockingVaultProxy.attach(lockingVaultProxy.address);
-  console.log("deployed locking vault");
 
   const accounts: Account[] = [];
   for (const i in signers) {
@@ -111,6 +103,7 @@ export async function deployGovernanace(
 
   const merkleTree = getMerkleTree(accounts);
   const optimisticRewardsVault = await deployOptimisticRewards(
+    hre,
     signer,
     votingToken.address,
     coreVoting.address,

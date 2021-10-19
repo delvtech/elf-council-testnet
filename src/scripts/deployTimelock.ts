@@ -1,8 +1,10 @@
 import { BigNumberish, Signer } from "ethers";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { Timelock__factory } from "types/factories/Timelock__factory";
 import { Timelock } from "types/Timelock";
 
 export async function deployTimelock(
+  hre: HardhatRuntimeEnvironment,
   signer: Signer,
   waitTime: BigNumberish,
   governanceAddress: string,
@@ -14,6 +16,11 @@ export async function deployTimelock(
     governanceAddress,
     gscVaultAddress
   );
+
+  await hre.ethernal.push({
+    name: "Timelock",
+    address: timeLockContract.address,
+  });
 
   return timeLockContract;
 }

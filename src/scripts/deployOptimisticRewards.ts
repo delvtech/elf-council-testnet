@@ -1,8 +1,10 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 import MerkleTree from "merkletreejs";
 import { OptimisticRewards, OptimisticRewards__factory } from "types";
 
 export async function deployOptimisticRewards(
+  hre: HardhatRuntimeEnvironment,
   signer: SignerWithAddress,
   elementTokenAddress: string,
   coreVotingAddress: string,
@@ -18,6 +20,11 @@ export async function deployOptimisticRewards(
     elementTokenAddress,
     lockingVaultAddress
   );
+
+  await hre.ethernal.push({
+    name: "OptimisticRewards",
+    address: rewardsContract.address,
+  });
 
   return rewardsContract;
 }
