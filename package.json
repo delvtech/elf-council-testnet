@@ -44,6 +44,8 @@
     "load-contracts": "sh scripts/load-elf-council.sh",
     "deploy-contracts": "npx hardhat run src/scripts/main.ts --network localhost --no-compile && npm run build-tokenlist",
     "test-claiming": "npx hardhat run src/scripts/testClaiming.ts --network localhost --no-compile",
-    "test-proposal": "npx hardhat run src/scripts/testProposal.ts --network localhost --no-compile"
+    "test-proposal": "npx hardhat run src/scripts/testProposal.ts --network localhost --no-compile",
+    "ethernal-listen": "npx ethernal listen -l",
+    "ethernal-reset": "npx ethernal \"Hardhat Network\""
   }
 }
