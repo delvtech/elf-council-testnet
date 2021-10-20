@@ -12,7 +12,7 @@ import {
 import timelockData from "../../artifacts/src/contracts/features/Timelock.sol/Timelock.json";
 
 const ONE_WEEK_IN_SECONDS = 60 * 60 * 24 * 7;
-const ONE_ETHER = ethers.utils.parseEther("1");
+const FIFTY_ETHER = ethers.utils.parseEther("50");
 async function testProposal() {
   const signers: SignerWithAddress[] = await hre.ethers.getSigners();
   const [signer] = signers;
@@ -57,7 +57,7 @@ async function testProposal() {
   for (const i in signers) {
     accounts.push({
       address: signers[i].address,
-      value: ONE_ETHER,
+      value: FIFTY_ETHER,
     });
   }
 
@@ -82,13 +82,13 @@ async function testProposal() {
   const proof = merkleTree.getHexProof(
     await hashAccount({
       address: signers[0].address,
-      value: ONE_ETHER,
+      value: FIFTY_ETHER,
     })
   );
   console.log("proof", proof);
   const extraData = ethers.utils.defaultAbiCoder.encode(
     ["uint256", "bytes32[]"],
-    [ONE_ETHER, proof]
+    [FIFTY_ETHER, proof]
   );
 
   const votingVaults = [lockingVault, optimisticRewardsVault];
