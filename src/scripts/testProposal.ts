@@ -96,7 +96,9 @@ async function testProposal() {
   const targets = [timeLock];
   const ballot = 0; // yes
   const callDatas = [calldataCoreVoting];
-  const lastCall = Math.round(Date.now() / 1000) + ONE_WEEK_IN_SECONDS;
+  const currentBlock = await hre.ethers.provider.getBlockNumber();
+  const oneDayInBlocks = await coreVotingContract.DAY_IN_BLOCKS();
+  const lastCall = oneDayInBlocks.toNumber() * 9 + currentBlock;
 
   const tx = await coreVotingContract.proposal(
     votingVaults,
