@@ -13,11 +13,11 @@ npm start
 ```
 
 Next, you'll have to do some Metamask set up:
-  - In the terminal where you just launched the etereum testnet, grab the private key for one of the
+  - In the terminal where you just launched the ethereum testnet, grab the private key for one of the
     addresses, usually the 2nd one that starts with 0x7099..
   - In metamask, add a new account with that private key, name it Hardhat Signer #1 (or whichever
     one you chose).
-  - In metmask, add a new Cutom RPC: Click the netowrk dropdown at the top, select Custom RPC, fill
+  - In metamask, add a new Cutom RPC: Click the netowrk dropdown at the top, select Custom RPC, fill
     out the settings with:
       - Network Name: Hardhart Network
       - New RPC URL: http://localhost:8545/ (not https!)
