@@ -15,6 +15,8 @@ npm start
 Next, you'll have to do some Metamask set up:
   - In the terminal where you just launched the ethereum testnet, grab the private key for one of the
     addresses, usually the 2nd one that starts with 0x7099..
+    Account #1: 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 (100000 ETH)
+    Private Key: 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d
   - In metamask, add a new account with that private key, name it Hardhat Signer #1 (or whichever
     one you chose).
   - In metamask, add a new Cutom RPC: Click the netowrk dropdown at the top, select Custom RPC, fill
@@ -24,12 +26,6 @@ Next, you'll have to do some Metamask set up:
       - Chain ID: 31337
 
 # To Run
-
-You need to start the hardhat local ethereum testnet:
-
-```bash
-npm run start
-```
 
 Next, you'll need to set up an account with Ethernal. If you don't have an account, go to
 https://app.tryethernal.com to set one up and then follow the instructions:
@@ -51,6 +47,11 @@ npm run ethernal-listen
 In a third terminal window run the following command to deploy the contracts:
 ```bash
 npm run deploy-contracts
+```
+
+In this same terminal window, you'll want to run this script to create some proposals.  This should
+be done AFTER delegating some of your tokens in the locking vault through the UI
+```bash
 # run this n times to create n dummy proposals that are linked to snapshot proposals.
 npm run test-proposal
 ```

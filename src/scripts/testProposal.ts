@@ -9,9 +9,8 @@ import {
   LockingVault__factory,
   MockERC20__factory,
 } from "types";
-import timelockData from "../../artifacts/src/contracts/features/Timelock.sol/Timelock.json";
+import timelockData from "artifacts/src/contracts/features/Timelock.sol/Timelock.json";
 
-const ONE_WEEK_IN_SECONDS = 60 * 60 * 24 * 7;
 const FIFTY_ETHER = ethers.utils.parseEther("50");
 async function testProposal() {
   const signers: SignerWithAddress[] = await hre.ethers.getSigners();
@@ -33,6 +32,12 @@ async function testProposal() {
   );
 
   const elementTokenContract = MockERC20__factory.connect(elementToken, signer);
+
+  // TODO: set an actual voting power minimum in deployGovernance.  Find out what the actual
+  // required voting power is and set this conditionally if the signer doesn't have enough.
+  /********************************************************************************
+   * give the signer enough voting power to submit a proposal
+   ********************************************************************************/
   const setBalTx = await elementTokenContract.setBalance(
     signer.address,
     parseEther("50")
@@ -52,7 +57,14 @@ async function testProposal() {
     signer.address
   );
   await depositTx.wait(1);
+  /********************************************************************************/
 
+  // TODO: lift this out, populate the tree from a leaves.json much like elf-council-merkle does or
+  // just get the actual leaves.json from that repo
+  /********************************************************************************
+   * create a merkle tree.  NOTE: this has to match exactly with the merkle tree provided by
+   * elf-council-merkle.
+   ********************************************************************************/
   const accounts = [];
   for (const i in signers) {
     accounts.push({
@@ -62,19 +74,26 @@ async function testProposal() {
   }
 
   const merkleTree = getMerkleTree(accounts);
+  /********************************************************************************/
 
+  /********************************************************************************
+   * Set up a new proposal.  This proposal will update the wait time for the Timelock contract.  The
+   * wait time is the number of blocks that must pass before a proposal can be  executed*
+   ********************************************************************************/
   const coreVotingContract = CoreVoting__factory.connect(coreVoting, signer);
-  const newWaitTime = 123456;
+
+  // for testnet we set this to 10 since blocks aren't automined.
+  const newWaitTime = 10;
   const tInterface = new ethers.utils.Interface(timelockData.abi);
 
-  //setup calldata for timelock's setTime function.
+  // setup calldata for timelock's setTime function.
   const calldataTimelock = tInterface.encodeFunctionData("setWaitTime", [
     newWaitTime,
   ]);
-  // get the callhash
+  // get the callhash, this is how Timelock determines if the call is valid before it executes it
   const callHash = await createCallHash([calldataTimelock], [timeLock]);
-  // calldata for the coreVoting contract
 
+  // calldata for the coreVoting contract
   const calldataCoreVoting = tInterface.encodeFunctionData("registerCall", [
     callHash,
   ]);
@@ -85,14 +104,14 @@ async function testProposal() {
       value: FIFTY_ETHER,
     })
   );
-  console.log("proof", proof);
   const extraData = ethers.utils.defaultAbiCoder.encode(
     ["uint256", "bytes32[]"],
     [FIFTY_ETHER, proof]
   );
 
   const votingVaults = [lockingVault, optimisticRewardsVault];
-  const extraVaultData = ["0x00", extraData]; // empty for now
+  // note that lockingVault doesn't require extra data when querying vote power, so we stub with "0x00"
+  const extraVaultData = ["0x00", extraData];
   const targets = [timeLock];
   const ballot = 0; // yes
   const callDatas = [calldataCoreVoting];
@@ -109,6 +128,18 @@ async function testProposal() {
     ballot
   );
   await tx.wait(1);
+
+  const proposalArgs = [
+    ["votingVaults", votingVaults],
+    ["extraVaultData", extraVaultData],
+    ["targets", targets],
+    ["callDatas", callDatas],
+    ["lastCall", lastCall],
+    ["ballot", ballot],
+  ];
+
+  console.log("Proposal created with:");
+  proposalArgs.forEach(([name, value]) => console.log(name, value));
 }
 
 // We recommend this pattern to be able to use async/await everywhere

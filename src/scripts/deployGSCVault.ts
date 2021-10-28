@@ -1,5 +1,6 @@
 import { BigNumberish, Signer } from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";
 import { GSCVault__factory } from "types/factories/GSCVault__factory";
 import { GSCVault } from "types/GSCVault";
 
@@ -16,10 +17,8 @@ export async function deployGSCVault(
     votingPowerBound,
     governanceOwnerAddress
   );
-  await hre.ethernal.push({
-    name: "GSCVault",
-    address: GSCContract.address,
-  });
+
+  await syncContractWithEthernal(hre, "GSCVault", GSCContract.address);
 
   return GSCContract;
 }

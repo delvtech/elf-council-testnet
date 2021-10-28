@@ -1,5 +1,6 @@
 import { BigNumberish, Signer } from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";
 import { LockingVault__factory } from "types/factories/LockingVault__factory";
 import { SimpleProxy__factory } from "types/factories/SimpleProxy__factory";
 import { SimpleProxy } from "types/SimpleProxy";
@@ -35,10 +36,11 @@ export async function deployLockingVault(
 
   console.log("deployed locking vault");
 
-  await hre.ethernal.push({
-    name: "LockingVault",
-    address: lockingVaultContract.address,
-  });
+  await syncContractWithEthernal(
+    hre,
+    "LockingVault",
+    lockingVaultContract.address
+  );
 
   return lockingVaultContract;
 }
