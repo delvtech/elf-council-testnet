@@ -11,7 +11,6 @@ import {
 } from "types";
 import timelockData from "../../artifacts/src/contracts/features/Timelock.sol/Timelock.json";
 
-const ONE_WEEK_IN_SECONDS = 60 * 60 * 24 * 7;
 const FIFTY_ETHER = ethers.utils.parseEther("50");
 async function testProposal() {
   const signers: SignerWithAddress[] = await hre.ethers.getSigners();
