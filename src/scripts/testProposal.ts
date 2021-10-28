@@ -76,18 +76,24 @@ async function testProposal() {
   const merkleTree = getMerkleTree(accounts);
   /********************************************************************************/
 
+  /********************************************************************************
+   * Set up a new proposal.  This proposal will update the wait time for the Timelock contract.  The
+   * wait time is the number of blocks that must pass before a proposal can be  executed*
+   ********************************************************************************/
   const coreVotingContract = CoreVoting__factory.connect(coreVoting, signer);
-  const newWaitTime = 123456;
+
+  // for testnet we set this to 10 since blocks aren't automined.
+  const newWaitTime = 10;
   const tInterface = new ethers.utils.Interface(timelockData.abi);
 
-  //setup calldata for timelock's setTime function.
+  // setup calldata for timelock's setTime function.
   const calldataTimelock = tInterface.encodeFunctionData("setWaitTime", [
     newWaitTime,
   ]);
-  // get the callhash
+  // get the callhash, this is how Timelock determines if the call is valid before it executes it
   const callHash = await createCallHash([calldataTimelock], [timeLock]);
-  // calldata for the coreVoting contract
 
+  // calldata for the coreVoting contract
   const calldataCoreVoting = tInterface.encodeFunctionData("registerCall", [
     callHash,
   ]);
