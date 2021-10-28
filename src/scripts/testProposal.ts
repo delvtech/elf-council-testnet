@@ -9,7 +9,7 @@ import {
   LockingVault__factory,
   MockERC20__factory,
 } from "types";
-import timelockData from "../../artifacts/src/contracts/features/Timelock.sol/Timelock.json";
+import timelockData from "artifacts/src/contracts/features/Timelock.sol/Timelock.json";
 
 const FIFTY_ETHER = ethers.utils.parseEther("50");
 async function testProposal() {

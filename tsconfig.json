@@ -12,6 +12,9 @@
       "src/*": [
         "./src/*"
       ],
+      "artifacts/*": [
+        "./artifacts/*"
+      ],
       "types/*": [
         "./types/*"
       ],
