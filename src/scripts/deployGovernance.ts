@@ -44,10 +44,16 @@ export async function deployGovernanace(
     signer,
     [],
     signer.address,
-    // QUESTION what are good values here and why?
-    1,
-    1,
-    ethers.constants.AddressZero
+    // set quorum to 50 so any test account can pass a vote
+    50,
+    // set minProposalPower to 50 so any test account can pass a vote
+    50,
+    // don't care about the gsc vault yet, that will get set after we deploy the gsc vault
+    ethers.constants.AddressZero,
+    // can execute a proposal 10 blocks after it gets created
+    "10",
+    // can vote on a proposal up to 15 blocks from when it gets created
+    "15"
   );
   console.log("deployed empty core voting");
 
@@ -59,8 +65,10 @@ export async function deployGovernanace(
     // QUESTION: setting the signer here to the timelock owner here so I can use 'authorize' later.
     // is this right?
     signer.address,
-    0,
-    0,
+    // what values should I be setting these to in order to test GSC powers in developmet?
+    // for now, set to 1 so that GSC can pass things easily in development
+    "1",
+    "1",
     ethers.constants.AddressZero
   );
   console.log("deployed empty gsc core voting");
@@ -68,7 +76,8 @@ export async function deployGovernanace(
   const timeLock = await deployTimelock(
     hre,
     signer,
-    0,
+    // can execute a proposal 10 blocks after it gets created
+    "10",
     signer.address,
     signer.address
   );
@@ -78,8 +87,8 @@ export async function deployGovernanace(
     hre,
     signer,
     gscCoreVoting.address,
-    // QUESTION what is the power bound?  what's a good value here?
-    0,
+    // any test account can get onto GSC with this much vote power
+    "100",
     timeLock.address
   );
   console.log("deployed gsc vault");
