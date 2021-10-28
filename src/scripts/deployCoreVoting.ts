@@ -1,6 +1,7 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BigNumberish } from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";
 import { CoreVoting } from "types/CoreVoting";
 import { CoreVoting__factory } from "types/factories/CoreVoting__factory";
 
@@ -26,10 +27,7 @@ export async function deployCoreVoting(
     votingVaultAddresses
   );
 
-  await hre.ethernal.push({
-    name: "CoreVoting",
-    address: coreVotingContract.address,
-  });
+  await syncContractWithEthernal(hre, "CoreVoting", coreVotingContract.address);
 
   (await coreVotingContract.setLockDuration(lockDuration)).wait(1);
   (await coreVotingContract.changeExtraVotingTime(extraVotingTime)).wait(1);

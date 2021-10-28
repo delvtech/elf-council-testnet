@@ -1,5 +1,6 @@
 import { Signer } from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";
 import { MockERC20__factory } from "types/factories/MockERC20__factory";
 import { MockERC20 } from "types/MockERC20";
 
@@ -12,10 +13,7 @@ export async function deployVotingToken(
     "Element Governance Token",
     "ELFI"
   );
-  await hre.ethernal.push({
-    name: "MockERC20",
-    address: tokenContract.address,
-  });
+  await syncContractWithEthernal(hre, "MockERC20", tokenContract.address);
 
   return tokenContract;
 }
