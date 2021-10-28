@@ -90,7 +90,7 @@ export async function deployGovernanace(
     signer,
     votingToken.address,
     timeLock.address,
-    10000
+    1
   );
 
   const accounts: Account[] = [];

@@ -1,7 +1,7 @@
 {
-  "name": "Testnet token list",
+  "name": "Council Testnet token list",
   "logoURI": "https://element.fi/logo.svg",
-  "timestamp": "2021-10-18T00:28:19.472Z",
+  "timestamp": "2021-10-28T03:06:10.354Z",
   "version": {
     "major": 0,
     "minor": 1,
@@ -22,6 +22,7 @@
       "decimals": 0,
       "symbol": "",
       "extensions": {
+        "dayInBlocks": 6496,
         "baseQuorum": 1,
         "lockDuration": 19488,
         "minProposalPower": 1,
@@ -35,6 +36,7 @@
       "decimals": 0,
       "symbol": "",
       "extensions": {
+        "dayInBlocks": 6496,
         "baseQuorum": 0,
         "lockDuration": 19488,
         "minProposalPower": 0,
@@ -49,7 +51,7 @@
       "symbol": "",
       "extensions": {
         "token": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c",
-        "staleBlockLag": 10000
+        "staleBlockLag": 1
       }
     },
     {
