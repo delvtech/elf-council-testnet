@@ -19,6 +19,7 @@ export async function getTokenList(
       coreVoting,
       gscCoreVoting,
       lockingVault,
+      vestingVault,
       optimisticRewardsVault,
       gscVault,
     },
@@ -42,6 +43,12 @@ export async function getTokenList(
     chainId,
     lockingVault,
     "Element Locking Vault"
+  );
+
+  const vestingVaultInfo = await getLockingVaultInfo(
+    chainId,
+    vestingVault,
+    "Element Vesting Vault"
   );
 
   const optimisticRewardsVaultInfo = await getOptimisticRewardsVaultInfo(
@@ -70,6 +77,7 @@ export async function getTokenList(
       coreVotingInfo,
       gscCoreVotingInfo,
       lockingVaultInfo,
+      vestingVaultInfo,
       optimisticRewardsVaultInfo,
       gscVaultInfo,
     ],
