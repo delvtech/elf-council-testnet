@@ -9,6 +9,7 @@ import { deployGSCVault } from "src/scripts/deployGSCVault";
 import { deployLockingVault } from "src/scripts/deployLockingVault";
 import { deployOptimisticRewards } from "src/scripts/deployOptimisticRewards";
 import { deployTimelock } from "src/scripts/deployTimelock";
+import { deployVestingVault } from "src/scripts/deployVestingVault";
 import { deployVotingToken } from "src/scripts/deployVotingToken";
 import { MockERC20__factory } from "types/factories/MockERC20__factory";
 import { MockERC20 } from "types/MockERC20";
@@ -23,6 +24,7 @@ export interface GovernanceContracts {
   gscVault: string;
   timeLock: string;
   lockingVault: string;
+  vestingVault: string;
   optimisticRewardsVault: string;
 }
 
@@ -102,6 +104,17 @@ export async function deployGovernanace(
     1
   );
 
+  // deploy vesting vault
+  const vestingVault = await deployVestingVault(
+    hre,
+    signer,
+    votingToken.address,
+    timeLock.address,
+    1
+  );
+
+  // give out some grants to signers[2] and signers[3]
+
   const accounts: Account[] = [];
   for (const i in signers) {
     accounts.push({
@@ -161,9 +174,11 @@ export async function deployGovernanace(
     gscVault: gscVault.address,
     timeLock: timeLock.address,
     lockingVault: lockingVault.address,
+    vestingVault: vestingVault.address,
     optimisticRewardsVault: optimisticRewardsVault.address,
   };
 }
+
 async function giveRewardsVaultTokens(
   accounts: Account[],
   votingToken: MockERC20,
