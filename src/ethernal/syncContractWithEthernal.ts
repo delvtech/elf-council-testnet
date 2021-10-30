@@ -1,20 +1,23 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
+const sync = Boolean(process.env.SYNC_ETHERNAL);
 export async function syncContractWithEthernal(
   hre: HardhatRuntimeEnvironment,
   name: string,
   address: string
 ) {
-  try {
-    await hre.ethernal.push({
-      name,
-      address,
-    });
-  } catch (error) {
-    if (isErrorWithMessage(error)) {
-      console.log("error syncing contract to Ethernal, ", error.message);
+  if (sync) {
+    try {
+      await hre.ethernal.push({
+        name,
+        address,
+      });
+    } catch (error) {
+      if (isErrorWithMessage(error)) {
+        console.log("error syncing contract to Ethernal, ", error.message);
+      }
+      console.log("error syncing contract to Ethernal");
     }
-    console.log("error syncing contract to Ethernal", error);
   }
 }
 

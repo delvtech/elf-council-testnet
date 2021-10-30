@@ -3,9 +3,6 @@ import { ethers, Signer } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import fs from "fs";
 import hre from "hardhat";
-// This is imported so that it will install the plugin on the hre
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import ethernal from "hardhat-ethernal";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { AddressesJsonFile } from "src/addresses/AddressesJsonFile";
 import {
@@ -13,6 +10,12 @@ import {
   GovernanceContracts,
 } from "src/scripts/deployGovernance";
 import { MockERC20__factory, VestingVault__factory } from "types";
+
+if (process.env.SYNC_ETHERNAL) {
+  // This is imported so that it will install the plugin on the hre
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  require("hardhat-ethernal");
+}
 
 async function main() {
   const signers: SignerWithAddress[] = await hre.ethers.getSigners();
