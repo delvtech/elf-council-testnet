@@ -7,3 +7,5 @@ artifacts
 compiled
 
 elf-council
+
+.env
