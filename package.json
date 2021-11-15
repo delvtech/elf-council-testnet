@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
+    "@alch/alchemy-web3": "^1.1.7",
+    "@ethersproject/providers": "^5.4.0",
     "@uniswap/token-lists": "^1.0.0-beta.26",
     "ethernal": "^0.8.0",
     "hardhat-ethernal": "^0.3.10",
