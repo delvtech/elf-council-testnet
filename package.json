@@ -44,6 +44,7 @@
     "start-ethernal": "SYNC_ETHERNAL=1 npx hardhat node",
     "build-contracts": "sh scripts/build-contracts.sh",
     "build-tokenlist": "npx hardhat run src/tokenlist/buildTokenList.ts --network localhost --no-compile",
+    "build-tokenlist-goerli": "npx hardhat run src/tokenlist/buildTokenListGoerli.ts --network goerli --no-compile",
     "load-contracts": "sh scripts/load-elf-council.sh",
     "deploy-contracts": "npx hardhat run src/scripts/main.ts --network localhost --no-compile && npm run build-tokenlist",
     "test-claiming": "npx hardhat run src/scripts/testClaiming.ts --network localhost --no-compile",
