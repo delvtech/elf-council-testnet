@@ -17,7 +17,7 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface LockingVaultInterface extends ethers.utils.Interface {
   functions: {
@@ -85,6 +85,10 @@ interface LockingVaultInterface extends ethers.utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "VoteChange"): EventFragment;
 }
+
+export type VoteChangeEvent = TypedEvent<
+  [string, string, BigNumber] & { from: string; to: string; amount: BigNumber }
+>;
 
 export class LockingVault extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -248,6 +252,15 @@ export class LockingVault extends BaseContract {
   };
 
   filters: {
+    "VoteChange(address,address,int256)"(
+      from?: string | null,
+      to?: string | null,
+      amount?: null
+    ): TypedEventFilter<
+      [string, string, BigNumber],
+      { from: string; to: string; amount: BigNumber }
+    >;
+
     VoteChange(
       from?: string | null,
       to?: string | null,

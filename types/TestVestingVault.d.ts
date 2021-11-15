@@ -17,7 +17,7 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface TestVestingVaultInterface extends ethers.utils.Interface {
   functions: {
@@ -158,6 +158,10 @@ interface TestVestingVaultInterface extends ethers.utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "VoteChange"): EventFragment;
 }
+
+export type VoteChangeEvent = TypedEvent<
+  [string, string, BigNumber] & { to: string; from: string; amount: BigNumber }
+>;
 
 export class TestVestingVault extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -516,6 +520,15 @@ export class TestVestingVault extends BaseContract {
   };
 
   filters: {
+    "VoteChange(address,address,int256)"(
+      to?: string | null,
+      from?: string | null,
+      amount?: null
+    ): TypedEventFilter<
+      [string, string, BigNumber],
+      { to: string; from: string; amount: BigNumber }
+    >;
+
     VoteChange(
       to?: string | null,
       from?: string | null,
