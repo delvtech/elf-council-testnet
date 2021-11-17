@@ -17,7 +17,7 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface TestCoreVotingInterface extends ethers.utils.Interface {
   functions: {
@@ -253,6 +253,19 @@ interface TestCoreVotingInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ProposalCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalExecuted"): EventFragment;
 }
+
+export type ProposalCreatedEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, BigNumber] & {
+    proposalId: BigNumber;
+    created: BigNumber;
+    execution: BigNumber;
+    expiration: BigNumber;
+  }
+>;
+
+export type ProposalExecutedEvent = TypedEvent<
+  [BigNumber] & { proposalId: BigNumber }
+>;
 
 export class TestCoreVoting extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -713,6 +726,21 @@ export class TestCoreVoting extends BaseContract {
   };
 
   filters: {
+    "ProposalCreated(uint256,uint256,uint256,uint256)"(
+      proposalId?: null,
+      created?: null,
+      execution?: null,
+      expiration?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber, BigNumber],
+      {
+        proposalId: BigNumber;
+        created: BigNumber;
+        execution: BigNumber;
+        expiration: BigNumber;
+      }
+    >;
+
     ProposalCreated(
       proposalId?: null,
       created?: null,
@@ -727,6 +755,10 @@ export class TestCoreVoting extends BaseContract {
         expiration: BigNumber;
       }
     >;
+
+    "ProposalExecuted(uint256)"(
+      proposalId?: null
+    ): TypedEventFilter<[BigNumber], { proposalId: BigNumber }>;
 
     ProposalExecuted(
       proposalId?: null

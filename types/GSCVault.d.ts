@@ -17,7 +17,7 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface GSCVaultInterface extends ethers.utils.Interface {
   functions: {
@@ -147,6 +147,14 @@ interface GSCVaultInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Kicked"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "MembershipProved"): EventFragment;
 }
+
+export type KickedEvent = TypedEvent<
+  [string, BigNumber] & { who: string; when: BigNumber }
+>;
+
+export type MembershipProvedEvent = TypedEvent<
+  [string, BigNumber] & { who: string; when: BigNumber }
+>;
 
 export class GSCVault extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -382,7 +390,17 @@ export class GSCVault extends BaseContract {
   };
 
   filters: {
+    "Kicked(address,uint256)"(
+      who?: string | null,
+      when?: null
+    ): TypedEventFilter<[string, BigNumber], { who: string; when: BigNumber }>;
+
     Kicked(
+      who?: string | null,
+      when?: null
+    ): TypedEventFilter<[string, BigNumber], { who: string; when: BigNumber }>;
+
+    "MembershipProved(address,uint256)"(
       who?: string | null,
       when?: null
     ): TypedEventFilter<[string, BigNumber], { who: string; when: BigNumber }>;

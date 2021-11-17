@@ -20,8 +20,14 @@ const _bytecode =
   "0x6080604052348015600f57600080fd5b50606b80601d6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c8063a9cc471814602d575b600080fd5b60336028565b00fea26469706673582212207dde1aaa311dcf0eb0200351ecd39ca261612edd47b2358dc42029a54ed9dc2964736f6c63430008030033";
 
 export class Reverter__factory extends ContractFactory {
-  constructor(signer?: Signer) {
-    super(_abi, _bytecode, signer);
+  constructor(
+    ...args: [signer: Signer] | ConstructorParameters<typeof ContractFactory>
+  ) {
+    if (args.length === 1) {
+      super(_abi, _bytecode, args[0]);
+    } else {
+      super(...args);
+    }
   }
 
   deploy(

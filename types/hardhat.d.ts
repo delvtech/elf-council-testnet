@@ -145,6 +145,172 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.VestingVault__factory>;
 
+    getContractAt(
+      name: "CoreVoting",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.CoreVoting>;
+    getContractAt(
+      name: "Airdrop",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Airdrop>;
+    getContractAt(
+      name: "OptimisticGrants",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.OptimisticGrants>;
+    getContractAt(
+      name: "Spender",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Spender>;
+    getContractAt(
+      name: "Timelock",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Timelock>;
+    getContractAt(
+      name: "Treasury",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Treasury>;
+    getContractAt(
+      name: "ICoreVoting",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ICoreVoting>;
+    getContractAt(
+      name: "IERC20",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC20>;
+    getContractAt(
+      name: "IERC20Permit",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC20Permit>;
+    getContractAt(
+      name: "ILockingVault",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ILockingVault>;
+    getContractAt(
+      name: "IVotingVault",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IVotingVault>;
+    getContractAt(
+      name: "Authorizable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Authorizable>;
+    getContractAt(
+      name: "ERC20Permit",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20Permit>;
+    getContractAt(
+      name: "ERC20PermitWithMint",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20PermitWithMint>;
+    getContractAt(
+      name: "MerkleRewards",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MerkleRewards>;
+    getContractAt(
+      name: "Storage",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Storage>;
+    getContractAt(
+      name: "MockCoreVoting",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockCoreVoting>;
+    getContractAt(
+      name: "MockDoubleSpender",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockDoubleSpender>;
+    getContractAt(
+      name: "MockERC20",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockERC20>;
+    getContractAt(
+      name: "MockHistoryTracker",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockHistoryTracker>;
+    getContractAt(
+      name: "MockLockingVault",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockLockingVault>;
+    getContractAt(
+      name: "MockTokenLogic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockTokenLogic>;
+    getContractAt(
+      name: "MockVotingVault",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockVotingVault>;
+    getContractAt(
+      name: "Reverter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Reverter>;
+    getContractAt(
+      name: "ReadAndWriteAnyStorage",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ReadAndWriteAnyStorage>;
+    getContractAt(
+      name: "TestCoreVoting",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TestCoreVoting>;
+    getContractAt(
+      name: "TestTreasury",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TestTreasury>;
+    getContractAt(
+      name: "SimpleProxy",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SimpleProxy>;
+    getContractAt(
+      name: "TestVestingVault",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TestVestingVault>;
+    getContractAt(
+      name: "GSCVault",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.GSCVault>;
+    getContractAt(
+      name: "LockingVault",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.LockingVault>;
+    getContractAt(
+      name: "OptimisticRewards",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.OptimisticRewards>;
+    getContractAt(
+      name: "VestingVault",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VestingVault>;
+
     // default types
     getContractFactory(
       name: string,
@@ -155,5 +321,10 @@ declare module "hardhat/types/runtime" {
       bytecode: ethers.utils.BytesLike,
       signer?: ethers.Signer
     ): Promise<ethers.ContractFactory>;
+    getContractAt(
+      nameOrAbi: string | any[],
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<ethers.Contract>;
   }
 }
