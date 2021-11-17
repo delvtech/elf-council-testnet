@@ -25,9 +25,9 @@ interface SpenderInterface extends ethers.utils.Interface {
     "authorized(address)": FunctionFragment;
     "blockExpenditure(uint256)": FunctionFragment;
     "deauthorize(address)": FunctionFragment;
+    "highSpend(uint256,address)": FunctionFragment;
     "highSpendLimit()": FunctionFragment;
     "isAuthorized(address)": FunctionFragment;
-    "largeSpend(uint256,address)": FunctionFragment;
     "mediumSpend(uint256,address)": FunctionFragment;
     "mediumSpendLimit()": FunctionFragment;
     "owner()": FunctionFragment;
@@ -47,16 +47,16 @@ interface SpenderInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "deauthorize", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "highSpend",
+    values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "highSpendLimit",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "isAuthorized",
     values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "largeSpend",
-    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "mediumSpend",
@@ -96,6 +96,7 @@ interface SpenderInterface extends ethers.utils.Interface {
     functionFragment: "deauthorize",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "highSpend", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "highSpendLimit",
     data: BytesLike
@@ -104,7 +105,6 @@ interface SpenderInterface extends ethers.utils.Interface {
     functionFragment: "isAuthorized",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "largeSpend", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "mediumSpend",
     data: BytesLike
@@ -191,15 +191,15 @@ export class Spender extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    highSpendLimit(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    isAuthorized(who: string, overrides?: CallOverrides): Promise<[boolean]>;
-
-    largeSpend(
+    highSpend(
       amount: BigNumberish,
       destination: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    highSpendLimit(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    isAuthorized(who: string, overrides?: CallOverrides): Promise<[boolean]>;
 
     mediumSpend(
       amount: BigNumberish,
@@ -255,15 +255,15 @@ export class Spender extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  highSpendLimit(overrides?: CallOverrides): Promise<BigNumber>;
-
-  isAuthorized(who: string, overrides?: CallOverrides): Promise<boolean>;
-
-  largeSpend(
+  highSpend(
     amount: BigNumberish,
     destination: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  highSpendLimit(overrides?: CallOverrides): Promise<BigNumber>;
+
+  isAuthorized(who: string, overrides?: CallOverrides): Promise<boolean>;
 
   mediumSpend(
     amount: BigNumberish,
@@ -313,15 +313,15 @@ export class Spender extends BaseContract {
 
     deauthorize(who: string, overrides?: CallOverrides): Promise<void>;
 
-    highSpendLimit(overrides?: CallOverrides): Promise<BigNumber>;
-
-    isAuthorized(who: string, overrides?: CallOverrides): Promise<boolean>;
-
-    largeSpend(
+    highSpend(
       amount: BigNumberish,
       destination: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    highSpendLimit(overrides?: CallOverrides): Promise<BigNumber>;
+
+    isAuthorized(who: string, overrides?: CallOverrides): Promise<boolean>;
 
     mediumSpend(
       amount: BigNumberish,
@@ -374,15 +374,15 @@ export class Spender extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    highSpendLimit(overrides?: CallOverrides): Promise<BigNumber>;
-
-    isAuthorized(who: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    largeSpend(
+    highSpend(
       amount: BigNumberish,
       destination: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    highSpendLimit(overrides?: CallOverrides): Promise<BigNumber>;
+
+    isAuthorized(who: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     mediumSpend(
       amount: BigNumberish,
@@ -442,17 +442,17 @@ export class Spender extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    highSpend(
+      amount: BigNumberish,
+      destination: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     highSpendLimit(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isAuthorized(
       who: string,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    largeSpend(
-      amount: BigNumberish,
-      destination: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     mediumSpend(

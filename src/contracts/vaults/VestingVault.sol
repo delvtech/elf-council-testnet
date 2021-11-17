@@ -37,13 +37,13 @@ contract VestingVault is IVotingVault {
 
     /// @notice initialization function to set initial variables.
     /// @dev Can only be called once after deployment.
-    /// @param _manager The vault manager can add and remove grants.
-    /// @param _timelock The timelock address can change the unvested multiplier.
-    function initialize(address _manager, address _timelock) public {
+    /// @param manager_ The vault manager can add and remove grants.
+    /// @param timelock_ The timelock address can change the unvested multiplier.
+    function initialize(address manager_, address timelock_) public {
         require(Storage.uint256Ptr("initialized").data == 0, "initialized");
         Storage.set(Storage.uint256Ptr("initialized"), 1);
-        Storage.set(Storage.addressPtr("manager"), _manager);
-        Storage.set(Storage.addressPtr("timelock"), _timelock);
+        Storage.set(Storage.addressPtr("manager"), manager_);
+        Storage.set(Storage.addressPtr("timelock"), timelock_);
         Storage.set(Storage.uint256Ptr("unvestedMultiplier"), 100);
     }
 
@@ -71,7 +71,7 @@ contract VestingVault is IVotingVault {
     }
 
     /// @notice A function to access the storage of the manager address.
-    /// @dev The manager can access all functions with the olyManager modifier.
+    /// @dev The manager can access all functions with the onlyManager modifier.
     /// @return A struct containing the manager address.
     function _manager() internal pure returns (Storage.Address memory) {
         return Storage.addressPtr("manager");
@@ -187,7 +187,7 @@ contract VestingVault is IVotingVault {
         uint256 delegateeVotes = votingPower.loadTop(grant.delegatee);
         votingPower.push(grant.delegatee, delegateeVotes + newVotingPower);
 
-        emit VoteChange(grant.delegatee, _who, int256(int128(newVotingPower)));
+        emit VoteChange(grant.delegatee, _who, int256(uint256(newVotingPower)));
     }
 
     /// @notice Removes a grant.
@@ -217,14 +217,15 @@ contract VestingVault is IVotingVault {
             delegateeVotes - grant.latestVotingPower
         );
 
-        // delete the grant
-        delete _grants()[_who];
-
+        // Emit the vote change event
         emit VoteChange(
             grant.delegatee,
             _who,
-            -1 * int256(int128(grant.latestVotingPower))
+            -1 * int256(uint256(grant.latestVotingPower))
         );
+
+        // delete the grant
+        delete _grants()[_who];
     }
 
     /// @notice Claim all withdrawable value from a grant.
@@ -247,6 +248,7 @@ contract VestingVault is IVotingVault {
     /// @notice Changes the caller's token grant voting power delegation.
     /// @dev The total voting power is not guaranteed to go up because
     /// the unvested token multiplier can be updated at any time.
+    /// @param _to the address to delegate to
     function delegate(address _to) public {
         VestingVaultStorage.Grant storage grant = _grants()[msg.sender];
         // If the delegation has already happened we don't want the tx to send
@@ -264,7 +266,7 @@ contract VestingVault is IVotingVault {
         emit VoteChange(
             grant.delegatee,
             msg.sender,
-            -1 * int256(int128(grant.latestVotingPower))
+            -1 * int256(uint256(grant.latestVotingPower))
         );
 
         // Note - It is important that this is loaded here and not before the previous state change because if
@@ -296,6 +298,8 @@ contract VestingVault is IVotingVault {
     /// @dev The manager can withdraw tokens that are not being used by a grant.
     /// This function cannot be used to recover tokens that were sent to this contract
     /// by any means other than `deposit()`
+    /// @param _amount the amount to withdraw
+    /// @param _recipient the address to withdraw to
     function withdraw(uint256 _amount, address _recipient) public onlyManager {
         Storage.Uint256 storage unassigned = _unassigned();
         require(unassigned.data >= _amount, "Insufficient balance");
@@ -308,12 +312,15 @@ contract VestingVault is IVotingVault {
     /// @dev Voting power is only updated for this block onward.
     /// see `History` for more on how voting power is tracked and queried.
     /// Anybody can update a grant's voting power.
+    /// @param _who the address who's voting power this function updates
     function updateVotingPower(address _who) public {
         VestingVaultStorage.Grant storage grant = _grants()[_who];
         _syncVotingPower(_who, grant);
     }
 
     /// @notice Helper to update a delegatee's voting power.
+    /// @param _who the address who's voting power we need to sync
+    /// @param _grant the storage pointer to the grant of that user
     function _syncVotingPower(
         address _who,
         VestingVaultStorage.Grant storage _grant
@@ -325,7 +332,7 @@ contract VestingVault is IVotingVault {
         uint256 newVotingPower = _currentVotingPower(_grant);
         // get the change in voting power. Negative if the voting power is reduced
         int256 change =
-            int256(newVotingPower) - int256(int128(_grant.latestVotingPower));
+            int256(newVotingPower) - int256(uint256(_grant.latestVotingPower));
         // do nothing if there is no change
         if (change == 0) return;
         if (change > 0) {
@@ -347,6 +354,7 @@ contract VestingVault is IVotingVault {
     /// @notice Attempts to load the voting power of a user
     /// @param user The address we want to load the voting power of
     /// @param blockNumber the block number we want the user's voting power at
+    // @param calldata the extra calldata is unused in this contract
     /// @return the number of votes
     function queryVotePower(
         address user,
@@ -379,6 +387,9 @@ contract VestingVault is IVotingVault {
         return votingPower.find(user, blockNumber);
     }
 
+    /// @notice Calculates how much a grantee can withdraw
+    /// @param _grant the memory location of the loaded grant
+    /// @return the amount which can be withdrawn
     function _getWithdrawableAmount(VestingVaultStorage.Grant memory _grant)
         internal
         view
@@ -433,29 +444,29 @@ contract VestingVault is IVotingVault {
 
     /// @notice timelock-only timelock update function.
     /// @dev Allows the timelock to update the timelock address.
-    /// @param _timelock The new timelock.
-    function setTimelock(address _timelock) public onlyTimelock {
-        Storage.set(Storage.addressPtr("timelock"), _timelock);
+    /// @param timelock_ The new timelock.
+    function setTimelock(address timelock_) public onlyTimelock {
+        Storage.set(Storage.addressPtr("timelock"), timelock_);
     }
 
     /// @notice timelock-only manager update function.
     /// @dev Allows the timelock to update the manager address.
-    /// @param _manager The new manager.
-    function setManager(address _manager) public onlyTimelock {
-        Storage.set(Storage.addressPtr("manager"), _manager);
+    /// @param manager_ The new manager.
+    function setManager(address manager_) public onlyTimelock {
+        Storage.set(Storage.addressPtr("manager"), manager_);
     }
 
     /// @notice A function to access the storage of the timelock address
     /// @dev The timelock can access all functions with the onlyTimelock modifier.
     /// @return The timelock address.
-    function timelock() public view returns (address) {
+    function timelock() public pure returns (address) {
         return _timelock().data;
     }
 
     /// @notice A function to access the storage of the manager address.
     /// @dev The manager can access all functions with the olyManager modifier.
     /// @return The manager address.
-    function manager() public view returns (address) {
+    function manager() public pure returns (address) {
         return _manager().data;
     }
 }

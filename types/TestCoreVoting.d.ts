@@ -50,6 +50,7 @@ interface TestCoreVotingInterface extends ethers.utils.Interface {
     "setOwner(address)": FunctionFragment;
     "updateDummy(uint256)": FunctionFragment;
     "vote(address[],bytes[],uint256,uint8)": FunctionFragment;
+    "votes(address,uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -160,6 +161,10 @@ interface TestCoreVotingInterface extends ethers.utils.Interface {
     functionFragment: "vote",
     values: [string[], BytesLike[], BigNumberish, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "votes",
+    values: [string, BigNumberish]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "DAY_IN_BLOCKS",
@@ -244,14 +249,17 @@ interface TestCoreVotingInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "vote", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "votes", data: BytesLike): Result;
 
   events: {
     "ProposalCreated(uint256,uint256,uint256,uint256)": EventFragment;
     "ProposalExecuted(uint256)": EventFragment;
+    "Voted(address,uint256,tuple)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ProposalCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalExecuted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Voted"): EventFragment;
 }
 
 export type ProposalCreatedEvent = TypedEvent<
@@ -265,6 +273,18 @@ export type ProposalCreatedEvent = TypedEvent<
 
 export type ProposalExecutedEvent = TypedEvent<
   [BigNumber] & { proposalId: BigNumber }
+>;
+
+export type VotedEvent = TypedEvent<
+  [
+    string,
+    BigNumber,
+    [BigNumber, number] & { votingPower: BigNumber; castBallot: number }
+  ] & {
+    voter: string;
+    proposalId: BigNumber;
+    vote: [BigNumber, number] & { votingPower: BigNumber; castBallot: number };
+  }
 >;
 
 export class TestCoreVoting extends BaseContract {
@@ -454,6 +474,14 @@ export class TestCoreVoting extends BaseContract {
       ballot: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    votes(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, number] & { votingPower: BigNumber; castBallot: number }
+    >;
   };
 
   DAY_IN_BLOCKS(overrides?: CallOverrides): Promise<BigNumber>;
@@ -591,6 +619,14 @@ export class TestCoreVoting extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  votes(
+    arg0: string,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, number] & { votingPower: BigNumber; castBallot: number }
+  >;
+
   callStatic: {
     DAY_IN_BLOCKS(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -723,6 +759,14 @@ export class TestCoreVoting extends BaseContract {
       ballot: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    votes(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, number] & { votingPower: BigNumber; castBallot: number }
+    >;
   };
 
   filters: {
@@ -763,6 +807,46 @@ export class TestCoreVoting extends BaseContract {
     ProposalExecuted(
       proposalId?: null
     ): TypedEventFilter<[BigNumber], { proposalId: BigNumber }>;
+
+    "Voted(address,uint256,tuple)"(
+      voter?: string | null,
+      proposalId?: BigNumberish | null,
+      vote?: null
+    ): TypedEventFilter<
+      [
+        string,
+        BigNumber,
+        [BigNumber, number] & { votingPower: BigNumber; castBallot: number }
+      ],
+      {
+        voter: string;
+        proposalId: BigNumber;
+        vote: [BigNumber, number] & {
+          votingPower: BigNumber;
+          castBallot: number;
+        };
+      }
+    >;
+
+    Voted(
+      voter?: string | null,
+      proposalId?: BigNumberish | null,
+      vote?: null
+    ): TypedEventFilter<
+      [
+        string,
+        BigNumber,
+        [BigNumber, number] & { votingPower: BigNumber; castBallot: number }
+      ],
+      {
+        voter: string;
+        proposalId: BigNumber;
+        vote: [BigNumber, number] & {
+          votingPower: BigNumber;
+          castBallot: number;
+        };
+      }
+    >;
   };
 
   estimateGas: {
@@ -891,6 +975,12 @@ export class TestCoreVoting extends BaseContract {
       proposalId: BigNumberish,
       ballot: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    votes(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
@@ -1029,6 +1119,12 @@ export class TestCoreVoting extends BaseContract {
       proposalId: BigNumberish,
       ballot: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    votes(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

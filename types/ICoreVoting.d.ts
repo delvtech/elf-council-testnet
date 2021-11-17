@@ -80,24 +80,30 @@ export class ICoreVoting extends BaseContract {
   interface: ICoreVotingInterface;
 
   functions: {
-    approvedVaults(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
+    approvedVaults(
+      vault: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
   };
 
-  approvedVaults(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+  approvedVaults(vault: string, overrides?: CallOverrides): Promise<boolean>;
 
   callStatic: {
-    approvedVaults(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+    approvedVaults(vault: string, overrides?: CallOverrides): Promise<boolean>;
   };
 
   filters: {};
 
   estimateGas: {
-    approvedVaults(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    approvedVaults(
+      vault: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     approvedVaults(
-      arg0: string,
+      vault: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

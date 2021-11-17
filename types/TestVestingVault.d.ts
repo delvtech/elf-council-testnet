@@ -262,8 +262,8 @@ export class TestVestingVault extends BaseContract {
     >;
 
     initialize(
-      _manager: string,
-      _timelock: string,
+      manager_: string,
+      timelock_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -288,12 +288,12 @@ export class TestVestingVault extends BaseContract {
     ): Promise<ContractTransaction>;
 
     setManager(
-      _manager: string,
+      manager_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     setTimelock(
-      _timelock: string,
+      timelock_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -372,8 +372,8 @@ export class TestVestingVault extends BaseContract {
   >;
 
   initialize(
-    _manager: string,
-    _timelock: string,
+    manager_: string,
+    timelock_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -398,12 +398,12 @@ export class TestVestingVault extends BaseContract {
   ): Promise<ContractTransaction>;
 
   setManager(
-    _manager: string,
+    manager_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   setTimelock(
-    _timelock: string,
+    timelock_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -474,8 +474,8 @@ export class TestVestingVault extends BaseContract {
     >;
 
     initialize(
-      _manager: string,
-      _timelock: string,
+      manager_: string,
+      timelock_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -496,9 +496,9 @@ export class TestVestingVault extends BaseContract {
 
     removeGrant(_who: string, overrides?: CallOverrides): Promise<void>;
 
-    setManager(_manager: string, overrides?: CallOverrides): Promise<void>;
+    setManager(manager_: string, overrides?: CallOverrides): Promise<void>;
 
-    setTimelock(_timelock: string, overrides?: CallOverrides): Promise<void>;
+    setTimelock(timelock_: string, overrides?: CallOverrides): Promise<void>;
 
     staleBlockLag(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -572,8 +572,8 @@ export class TestVestingVault extends BaseContract {
     getGrant(_who: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
-      _manager: string,
-      _timelock: string,
+      manager_: string,
+      timelock_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -598,12 +598,12 @@ export class TestVestingVault extends BaseContract {
     ): Promise<BigNumber>;
 
     setManager(
-      _manager: string,
+      manager_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     setTimelock(
-      _timelock: string,
+      timelock_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -665,8 +665,8 @@ export class TestVestingVault extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     initialize(
-      _manager: string,
-      _timelock: string,
+      manager_: string,
+      timelock_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -691,12 +691,12 @@ export class TestVestingVault extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     setManager(
-      _manager: string,
+      manager_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     setTimelock(
-      _timelock: string,
+      timelock_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

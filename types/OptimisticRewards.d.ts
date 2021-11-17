@@ -268,8 +268,8 @@ export class OptimisticRewards extends BaseContract {
       user: string,
       arg1: BigNumberish,
       extraData: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     rewardsRoot(overrides?: CallOverrides): Promise<[string]>;
 
@@ -349,8 +349,8 @@ export class OptimisticRewards extends BaseContract {
     user: string,
     arg1: BigNumberish,
     extraData: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   rewardsRoot(overrides?: CallOverrides): Promise<string>;
 
@@ -500,7 +500,7 @@ export class OptimisticRewards extends BaseContract {
       user: string,
       arg1: BigNumberish,
       extraData: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     rewardsRoot(overrides?: CallOverrides): Promise<BigNumber>;
@@ -591,7 +591,7 @@ export class OptimisticRewards extends BaseContract {
       user: string,
       arg1: BigNumberish,
       extraData: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     rewardsRoot(overrides?: CallOverrides): Promise<PopulatedTransaction>;

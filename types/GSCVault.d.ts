@@ -32,7 +32,7 @@ interface GSCVaultInterface extends ethers.utils.Interface {
     "members(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "proveMembership(address[],bytes[])": FunctionFragment;
-    "queryVotingPower(address,uint256,bytes)": FunctionFragment;
+    "queryVotePower(address,uint256,bytes)": FunctionFragment;
     "setCoreVoting(address)": FunctionFragment;
     "setIdleDuration(uint256)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
@@ -70,7 +70,7 @@ interface GSCVaultInterface extends ethers.utils.Interface {
     values: [string[], BytesLike[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "queryVotingPower",
+    functionFragment: "queryVotePower",
     values: [string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
@@ -118,7 +118,7 @@ interface GSCVaultInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "queryVotingPower",
+    functionFragment: "queryVotePower",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -239,7 +239,7 @@ export class GSCVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    queryVotingPower(
+    queryVotePower(
       who: string,
       arg1: BigNumberish,
       arg2: BytesLike,
@@ -305,7 +305,7 @@ export class GSCVault extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  queryVotingPower(
+  queryVotePower(
     who: string,
     arg1: BigNumberish,
     arg2: BytesLike,
@@ -365,7 +365,7 @@ export class GSCVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    queryVotingPower(
+    queryVotePower(
       who: string,
       arg1: BigNumberish,
       arg2: BytesLike,
@@ -448,7 +448,7 @@ export class GSCVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    queryVotingPower(
+    queryVotePower(
       who: string,
       arg1: BigNumberish,
       arg2: BytesLike,
@@ -527,7 +527,7 @@ export class GSCVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    queryVotingPower(
+    queryVotePower(
       who: string,
       arg1: BigNumberish,
       arg2: BytesLike,
