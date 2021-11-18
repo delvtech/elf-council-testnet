@@ -4,6 +4,7 @@ import { parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { Account, getMerkleTree } from "src/merkle";
+import { deployAirdrop } from "src/scripts/deployAirdrop";
 import { deployCoreVoting } from "src/scripts/deployCoreVoting";
 import { deployGSCVault } from "src/scripts/deployGSCVault";
 import { deployLockingVault } from "src/scripts/deployLockingVault";
@@ -12,6 +13,7 @@ import { deployTimelock } from "src/scripts/deployTimelock";
 import { deployVestingVault } from "src/scripts/deployVestingVault";
 import { deployVotingToken } from "src/scripts/deployVotingToken";
 import { MockERC20__factory } from "types/factories/MockERC20__factory";
+import { MerkleRewards } from "types/MerkleRewards";
 import { MockERC20 } from "types/MockERC20";
 import { OptimisticRewards } from "types/OptimisticRewards";
 
@@ -26,6 +28,7 @@ export interface GovernanceContracts {
   lockingVault: string;
   vestingVault: string;
   optimisticRewardsVault: string;
+  airdropContract: string;
 }
 
 export async function deployGovernanace(
@@ -134,13 +137,18 @@ export async function deployGovernanace(
   );
   console.log("deployed rewards vault");
 
-  await giveRewardsVaultTokens(
-    accounts,
-    votingToken,
+  const airdropContract = await deployAirdrop(
+    hre,
     signer,
-    optimisticRewardsVault
+    votingToken.address,
+    coreVoting.address,
+    merkleTree,
+    lockingVault.address
   );
-  console.log("rewards vault seeded with element tokens ");
+  console.log("deployed airdrop contract");
+
+  await giveRewardsVaultTokens(accounts, votingToken, signer, airdropContract);
+  console.log("airdrop contract seeded with element tokens ");
 
   // add approved governance vaults. signer is still the owner so we can set these
   await coreVoting.changeVaultStatus(lockingVault.address, true);
@@ -176,6 +184,7 @@ export async function deployGovernanace(
     lockingVault: lockingVault.address,
     vestingVault: vestingVault.address,
     optimisticRewardsVault: optimisticRewardsVault.address,
+    airdropContract: airdropContract.address,
   };
 }
 
@@ -183,7 +192,7 @@ async function giveRewardsVaultTokens(
   accounts: Account[],
   votingToken: MockERC20,
   signer: SignerWithAddress,
-  optimisticRewardsVault: OptimisticRewards
+  optimisticRewardsVault: MerkleRewards
 ) {
   const totalValueBN = accounts.reduce((total: BigNumber, account: Account) => {
     const { value } = account;
