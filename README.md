@@ -9,7 +9,8 @@ First, some initialization, in a terminal window run:
 ```bash
 npm ci
 npm run build-contracts
-npm start
+# if you don't need/want ethernal, you can just run 'npm start'
+npm start-ethernal
 ```
 
 Next, you'll have to do some Metamask set up:

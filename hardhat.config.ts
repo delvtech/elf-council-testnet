@@ -1,13 +1,21 @@
-// This adds support for typescript paths mappings
-import "tsconfig-paths/register";
 // This adds ethers to the hre which has dev utilities for local testnet like 'getSigners()'
 import "@nomiclabs/hardhat-waffle";
 // Typechain support for hardhat
 import "@typechain/hardhat";
 // Ethernal plugin - a blockchain / contract explorer for private testnets
 import "hardhat-ethernal";
+// This adds support for typescript paths mappings
+import "tsconfig-paths/register";
 
-import { HardhatUserConfig } from "hardhat/config";
+import { extendEnvironment, HardhatUserConfig } from "hardhat/config";
+
+const syncEthernal = Boolean(process.env.SYNC_ETHERNAL);
+extendEnvironment((hre) => {
+  hre.ethernalSync = syncEthernal;
+  hre.ethernalWorkspace = "Hardhat Network";
+  // paid feature, disable for now
+  hre.ethernalTrace = false;
+});
 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
