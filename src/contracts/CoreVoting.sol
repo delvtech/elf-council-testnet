@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.3;
 
 import "./interfaces/IVotingVault.sol";
 import "./libraries/Authorizable.sol";
 import "./libraries/ReentrancyBlock.sol";
+import "./interfaces/ICoreVoting.sol";
 
-contract CoreVoting is Authorizable, ReentrancyBlock {
+contract CoreVoting is Authorizable, ReentrancyBlock, ICoreVoting {
     // if a function selector does not have a set quorum we use this default quorum
     uint256 public baseQuorum;
 
@@ -51,14 +52,14 @@ contract CoreVoting is Authorizable, ReentrancyBlock {
     }
 
     // stores approved voting vaults
-    mapping(address => bool) public approvedVaults;
+    mapping(address => bool) public override approvedVaults;
 
     // proposal storage with the proposalID as key
     mapping(uint256 => Proposal) public proposals;
 
     // mapping of addresses and proposalIDs to vote struct representing
     // the voting actions taken for each proposal
-    mapping(address => mapping(uint256 => Vote)) internal _votes;
+    mapping(address => mapping(uint256 => Vote)) public votes;
 
     enum Ballot { YES, NO, MAYBE }
 
@@ -95,11 +96,13 @@ contract CoreVoting is Authorizable, ReentrancyBlock {
 
     event ProposalExecuted(uint256 proposalId);
 
+    event Voted(address indexed voter, uint256 indexed proposalId, Vote vote);
+
     /// @notice constructor
     /// @param _timelock Timelock contract.
     /// @param _baseQuorum Default quorum for all functions with no set quorum.
     /// @param _minProposalPower Minimum voting power needed to submit a proposal.
-    /// @param _gsc governance steering comity contract.
+    /// @param _gsc governance steering committee contract.
     /// @param votingVaults Initial voting vaults to approve.
     constructor(
         address _timelock,
@@ -113,7 +116,7 @@ contract CoreVoting is Authorizable, ReentrancyBlock {
         for (uint256 i = 0; i < votingVaults.length; i++) {
             approvedVaults[votingVaults[i]] = true;
         }
-        owner = address(_timelock);
+        setOwner(address(_timelock));
         _authorize(_gsc);
     }
 
@@ -136,6 +139,7 @@ contract CoreVoting is Authorizable, ReentrancyBlock {
     ) external {
         require(targets.length == calldatas.length, "array length mismatch");
         require(targets.length != 0, "empty proposal");
+
         // the hash is only used to verify the proposal data, proposals are tracked by ID
         // so there is no need to hash with proposalCount nonce.
         bytes32 proposalHash = keccak256(abi.encode(targets, calldatas));
@@ -211,6 +215,7 @@ contract CoreVoting is Authorizable, ReentrancyBlock {
         Ballot ballot
     ) public returns (uint256) {
         // No votes after the vote period is over
+        require(proposals[proposalId].created != 0, "proposal does not exist");
         require(block.number <= proposals[proposalId].expiration, "Expired");
 
         uint128 votingPower;
@@ -232,14 +237,18 @@ contract CoreVoting is Authorizable, ReentrancyBlock {
 
         // if a user has already voted, undo their previous vote.
         // NOTE: A new vote can have less voting power
-        if (_votes[msg.sender][proposalId].votingPower > 0) {
+        if (votes[msg.sender][proposalId].votingPower > 0) {
             proposals[proposalId].votingPower[
-                uint256(_votes[msg.sender][proposalId].castBallot)
-            ] -= _votes[msg.sender][proposalId].votingPower;
+                uint256(votes[msg.sender][proposalId].castBallot)
+            ] -= votes[msg.sender][proposalId].votingPower;
         }
-        _votes[msg.sender][proposalId] = Vote(votingPower, ballot);
+        votes[msg.sender][proposalId] = Vote(votingPower, ballot);
 
         proposals[proposalId].votingPower[uint256(ballot)] += votingPower;
+
+        // Emit an event to track this info
+        emit Voted(msg.sender, proposalId, votes[msg.sender][proposalId]);
+
         return votingPower;
     }
 

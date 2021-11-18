@@ -2,7 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { CoreVoting } from "./CoreVoting";
-export type { Airdrop } from "./Airdrop";
 export type { OptimisticGrants } from "./OptimisticGrants";
 export type { Spender } from "./Spender";
 export type { Timelock } from "./Timelock";
@@ -28,15 +27,15 @@ export type { Reverter } from "./Reverter";
 export type { ReadAndWriteAnyStorage } from "./ReadAndWriteAnyStorage";
 export type { TestCoreVoting } from "./TestCoreVoting";
 export type { TestTreasury } from "./TestTreasury";
-export type { SimpleProxy } from "./SimpleProxy";
 export type { TestVestingVault } from "./TestVestingVault";
+export type { SimpleProxy } from "./SimpleProxy";
 export type { GSCVault } from "./GSCVault";
 export type { LockingVault } from "./LockingVault";
 export type { OptimisticRewards } from "./OptimisticRewards";
 export type { VestingVault } from "./VestingVault";
+export type { Airdrop } from "./Airdrop";
 
 export { CoreVoting__factory } from "./factories/CoreVoting__factory";
-export { Airdrop__factory } from "./factories/Airdrop__factory";
 export { OptimisticGrants__factory } from "./factories/OptimisticGrants__factory";
 export { Spender__factory } from "./factories/Spender__factory";
 export { Timelock__factory } from "./factories/Timelock__factory";
@@ -62,9 +61,10 @@ export { Reverter__factory } from "./factories/Reverter__factory";
 export { ReadAndWriteAnyStorage__factory } from "./factories/ReadAndWriteAnyStorage__factory";
 export { TestCoreVoting__factory } from "./factories/TestCoreVoting__factory";
 export { TestTreasury__factory } from "./factories/TestTreasury__factory";
-export { SimpleProxy__factory } from "./factories/SimpleProxy__factory";
 export { TestVestingVault__factory } from "./factories/TestVestingVault__factory";
+export { SimpleProxy__factory } from "./factories/SimpleProxy__factory";
 export { GSCVault__factory } from "./factories/GSCVault__factory";
 export { LockingVault__factory } from "./factories/LockingVault__factory";
 export { OptimisticRewards__factory } from "./factories/OptimisticRewards__factory";
 export { VestingVault__factory } from "./factories/VestingVault__factory";
+export { Airdrop__factory } from "./factories/Airdrop__factory";

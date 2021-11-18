@@ -23,7 +23,6 @@ library History {
     // A struct which wraps a memory pointer to a string and the pointer to storage
     // derived from that name string by the storage library
     // WARNING - For security purposes never directly construct this object always use load
-    // TODO - Consider moving away from this caching model to reduce risk profile
     struct HistoricalBalances {
         string name;
         // Note - We use bytes32 to reduce how easy this is to manipulate in high level sol
@@ -144,7 +143,7 @@ library History {
     }
 
     /// @notice Finds the data stored with the highest block number which is less than or equal to a provided
-    ///         blocknumber user.
+    ///         blocknumber.
     /// @param wrapper The memory struct which we want to search for historical data
     /// @param who The address which indexes the array to be searched
     /// @param blocknumber The blocknumber we want to load the historical data of
@@ -222,13 +221,13 @@ library History {
     ) private view returns (uint256, uint256) {
         // We explicitly revert on the reading of memory which is uninitialized
         require(length != 0, "uninitialized");
+        // Do some correctness checks
+        require(staleBlock <= blocknumber);
+        require(startingMinIndex < length);
         // Load the bounds of our binary search
         uint256 maxIndex = length - 1;
         uint256 minIndex = startingMinIndex;
         uint256 staleIndex = 0;
-
-        // TODO - consider an optional short circuit which loads the top index and then returns purely that
-        //        this might optimize for normal operating conditions.
 
         // We run a binary search on the block number fields in the array between
         // the minIndex and maxIndex. If we find indexes with blocknumber < staleBlock
@@ -274,13 +273,15 @@ library History {
 
     /// @notice Clears storage between two bounds in array
     /// @param oldMin The first index to set to zero
-    /// @param newMin The new minium filled index, ie clears to index < newMin
+    /// @param newMin The new minimum filled index, ie clears to index < newMin
     /// @param data The storage array pointer
     function _clear(
         uint256 oldMin,
         uint256 newMin,
         uint256[] storage data
     ) private {
+        // Correctness checks on this call
+        require(oldMin <= newMin);
         // This function is private and trusted and should be only called by functions which ensure
         // that oldMin < newMin < length
         assembly {
@@ -325,14 +326,17 @@ library History {
 
     /// @notice This function sets our non standard bounds data field where a normal array
     ///         would have length
+    /// @param data the pointer to the storage array
     /// @param minIndex The minimum non stale index
     /// @param length The length of the storage array
-    /// @param data the pointer to the storage array
     function _setBounds(
         uint256[] storage data,
         uint256 minIndex,
         uint256 length
     ) private {
+        // Correctness check
+        require(minIndex < length);
+
         assembly {
             // Ensure data cleanliness
             let clearedLength := and(

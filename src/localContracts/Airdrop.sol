@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.3;
 
-import "../libraries/Authorizable.sol";
-import "../libraries/MerkleRewards.sol";
+import "../contracts/libraries/Authorizable.sol";
+import "../contracts/libraries/MerkleRewards.sol";
 
 // A merkle rewards contract with an expiration time
 
