@@ -1,5 +1,4 @@
 import { TokenInfo } from "@uniswap/token-lists";
-import { formatEther } from "ethers/lib/utils";
 import hre from "hardhat";
 import { OptimisticRewards__factory } from "types";
 
