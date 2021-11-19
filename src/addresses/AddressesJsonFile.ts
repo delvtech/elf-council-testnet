@@ -9,5 +9,8 @@ export interface AddressesJsonFile {
     lockingVault: string;
     vestingVault: string;
     optimisticRewardsVault: string;
+    optimisticGrants: string;
+    airdropContract: string;
+    treasury: string;
   };
 }
