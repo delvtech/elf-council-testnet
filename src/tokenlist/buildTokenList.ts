@@ -1,5 +1,5 @@
 import { getTokenList } from "src/tokenlist/getTokenList";
-import addressesJson from "src/addresses/addresses.json";
+import addressesJson from "src/addresses/testnet.addresses.json";
 
 // Generate the testnet.tokenlist.json file
 getTokenList(
