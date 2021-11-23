@@ -15,7 +15,6 @@ import { deployVotingToken } from "src/scripts/deployVotingToken";
 import { MockERC20__factory } from "types/factories/MockERC20__factory";
 import { MerkleRewards } from "types/MerkleRewards";
 import { MockERC20 } from "types/MockERC20";
-import { OptimisticRewards } from "types/OptimisticRewards";
 
 const FIFTY_VOTING_TOKENS = parseEther("50");
 

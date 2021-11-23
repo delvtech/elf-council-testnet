@@ -1,10 +1,14 @@
 import { TokenList } from "@uniswap/token-lists";
 import fs from "fs";
 import { AddressesJsonFile } from "src/addresses/AddressesJsonFile";
+import { getAirdropInfo } from "src/tokenlist/getAirdropInfo";
 import { getCoreVotingInfo } from "src/tokenlist/getCoreVotingInfo";
 import { getGscVaultInfo } from "src/tokenlist/getGscVaultInfo";
 import { getLockingVaultInfo } from "src/tokenlist/getLockingVaultInfo";
+import { getOptimisticGrantsInfo } from "src/tokenlist/getOptimisticGrantsInfo";
 import { getOptimisticRewardsVaultInfo } from "src/tokenlist/getOptimisticRewardsVaultInfo";
+import { getTimelockInfo } from "src/tokenlist/getTimelock";
+import { getTreasuryInfo } from "src/tokenlist/getTreasuryInfo";
 import { getVotingTokenInfo } from "src/tokenlist/getVotingTokenInfo";
 
 export async function getTokenList(
@@ -18,9 +22,13 @@ export async function getTokenList(
       elementToken,
       coreVoting,
       gscCoreVoting,
+      timeLock,
       lockingVault,
       vestingVault,
       optimisticRewardsVault,
+      airdropContract,
+      optimisticGrants,
+      treasury,
       gscVault,
     },
   } = addressesJson;
@@ -51,16 +59,40 @@ export async function getTokenList(
     "Element Vesting Vault"
   );
 
+  const gscVaultInfo = await getGscVaultInfo(
+    chainId,
+    gscVault,
+    "Element Governance Steering Committee Vault"
+  );
+
   const optimisticRewardsVaultInfo = await getOptimisticRewardsVaultInfo(
     chainId,
     optimisticRewardsVault,
     "Element Optimistic Rewards Vault"
   );
 
-  const gscVaultInfo = await getGscVaultInfo(
+  const optimisticGrantsInfo = await getOptimisticGrantsInfo(
     chainId,
-    gscVault,
-    "Element Governance Steering Committee Vault"
+    optimisticGrants,
+    "Element Optimistic Grants Vault"
+  );
+
+  const airdropInfo = await getAirdropInfo(
+    chainId,
+    airdropContract,
+    "Element Airdrop Contract"
+  );
+
+  const treasuryInfo = await getTreasuryInfo(
+    chainId,
+    treasury,
+    "Element Treasury"
+  );
+
+  const timelockInfo = await getTimelockInfo(
+    chainId,
+    timeLock,
+    "Element Timelock"
   );
 
   const tokenList: TokenList = {
@@ -78,8 +110,12 @@ export async function getTokenList(
       gscCoreVotingInfo,
       lockingVaultInfo,
       vestingVaultInfo,
-      optimisticRewardsVaultInfo,
       gscVaultInfo,
+      optimisticRewardsVaultInfo,
+      optimisticGrantsInfo,
+      airdropInfo,
+      treasuryInfo,
+      timelockInfo,
     ],
   };
 

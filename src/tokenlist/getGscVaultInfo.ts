@@ -1,13 +1,14 @@
-import { TokenInfo } from "@uniswap/token-lists";
 import hre from "hardhat";
 import { GSCVault__factory } from "types";
+
+import { GSCVaultInfo } from "./types";
 
 export const { provider } = hre.ethers;
 export async function getGscVaultInfo(
   chainId: number,
   tokenAddress: string,
   name: string
-): Promise<TokenInfo> {
+): Promise<GSCVaultInfo> {
   const gscVaultContract = GSCVault__factory.connect(tokenAddress, provider);
 
   const coreVotingPromise = gscVaultContract.coreVoting();

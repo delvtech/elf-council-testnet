@@ -43,12 +43,16 @@ function writeAddressesJson(governanceContracts: GovernanceContracts) {
   // Produce a schema-compliant testnet.addresses.json file
   const addressesJson: AddressesJsonFile = {
     chainId: 31337,
-    addresses: governanceContracts,
+    addresses: {
+      ...governanceContracts,
+      optimisticGrants: ethers.constants.AddressZero,
+      treasury: ethers.constants.AddressZero,
+    },
   };
   const schemaAddresses = JSON.stringify(addressesJson, null, 2);
 
   console.log("testnet.addresses.json", schemaAddresses);
-  fs.writeFileSync("./src/addresses/addresses.json", schemaAddresses);
+  fs.writeFileSync("./src/addresses/testnet.addresses.json", schemaAddresses);
 }
 
 async function giveAccountsVotingTokens(

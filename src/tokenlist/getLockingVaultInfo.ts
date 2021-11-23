@@ -1,13 +1,14 @@
-import { TokenInfo } from "@uniswap/token-lists";
 import hre from "hardhat";
 import { LockingVault__factory } from "types";
+
+import { LockingVaultInfo } from "./types";
 
 export const { provider } = hre.ethers;
 export async function getLockingVaultInfo(
   chainId: number,
   tokenAddress: string,
   name: string
-): Promise<TokenInfo> {
+): Promise<LockingVaultInfo> {
   const lockingVaultContract = LockingVault__factory.connect(
     tokenAddress,
     provider

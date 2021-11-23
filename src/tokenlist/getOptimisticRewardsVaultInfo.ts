@@ -1,14 +1,14 @@
-import { TokenInfo } from "@uniswap/token-lists";
-import { formatEther } from "ethers/lib/utils";
 import hre from "hardhat";
 import { OptimisticRewards__factory } from "types";
+
+import { OptimisticRewardsVaultInfo } from "./types";
 
 export const { provider } = hre.ethers;
 export async function getOptimisticRewardsVaultInfo(
   chainId: number,
   tokenAddress: string,
   name: string
-): Promise<TokenInfo> {
+): Promise<OptimisticRewardsVaultInfo> {
   const optimisticRewardsVaultContract = OptimisticRewards__factory.connect(
     tokenAddress,
     provider
