@@ -1,5 +1,5 @@
 import hre from "hardhat";
-import { CoreVotingContractTokenInfo } from "src/tokenlist/types";
+import { CoreVotingContractInfo } from "src/tokenlist/types";
 import { CoreVoting__factory } from "types";
 
 export const { provider } = hre.ethers;
@@ -7,7 +7,7 @@ export async function getCoreVotingInfo(
   chainId: number,
   tokenAddress: string,
   name: string
-): Promise<CoreVotingContractTokenInfo> {
+): Promise<CoreVotingContractInfo> {
   const coreVotingContract = CoreVoting__factory.connect(
     tokenAddress,
     provider

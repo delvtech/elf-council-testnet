@@ -1,13 +1,14 @@
-import { TokenInfo } from "@uniswap/token-lists";
 import hre from "hardhat";
 import { VestingVault__factory } from "types";
+
+import { VestingVaultInfo } from "./types";
 
 export const { provider } = hre.ethers;
 export async function getVestingVaultInfo(
   chainId: number,
   tokenAddress: string,
   name: string
-): Promise<TokenInfo> {
+): Promise<VestingVaultInfo> {
   const vestingVaultContract = VestingVault__factory.connect(
     tokenAddress,
     provider

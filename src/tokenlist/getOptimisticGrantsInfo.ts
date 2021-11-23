@@ -1,6 +1,6 @@
-import { TokenInfo } from "@uniswap/token-lists";
 import { formatUnits } from "ethers/lib/utils";
 import hre from "hardhat";
+import { OptimisticsGrantsContractInfo } from "src/tokenlist/types";
 import { ERC20Permit__factory, OptimisticGrants__factory } from "types";
 
 export const { provider } = hre.ethers;
@@ -8,7 +8,7 @@ export async function getOptimisticGrantsInfo(
   chainId: number,
   tokenAddress: string,
   name: string
-): Promise<TokenInfo> {
+): Promise<OptimisticsGrantsContractInfo> {
   const optimisticGrantsContract = OptimisticGrants__factory.connect(
     tokenAddress,
     provider

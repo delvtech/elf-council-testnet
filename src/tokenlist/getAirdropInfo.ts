@@ -1,13 +1,14 @@
-import { TokenInfo } from "@uniswap/token-lists";
 import hre from "hardhat";
 import { Airdrop__factory } from "types";
+
+import { AirdropContractInfo } from "./types";
 
 export const { provider } = hre.ethers;
 export async function getAirdropInfo(
   chainId: number,
   tokenAddress: string,
   name: string
-): Promise<TokenInfo> {
+): Promise<AirdropContractInfo> {
   const airdropContract = Airdrop__factory.connect(tokenAddress, provider);
 
   const rewardsRootPromise = airdropContract.rewardsRoot();
