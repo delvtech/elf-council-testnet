@@ -1,7 +1,7 @@
 {
   "name": "Council Testnet token list",
   "logoURI": "https://element.fi/logo.svg",
-  "timestamp": "2021-11-30T21:07:00.468Z",
+  "timestamp": "2021-11-30T21:08:13.189Z",
   "version": {
     "major": 0,
     "minor": 1,
@@ -102,7 +102,7 @@
       "extensions": {
         "rewardsRoot": "0x6dc5a608f709803fbd085c6fa82f7c1def6e42c351101dbc17767d4f3262ce62",
         "lockingVault": "0x67d269191c92Caf3cD7723F116c85e6E9bf55933",
-        "expiration": "1669840498",
+        "expiration": "1669842488",
         "token": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c"
       }
     },
