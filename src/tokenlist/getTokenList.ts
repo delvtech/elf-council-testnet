@@ -1,4 +1,4 @@
-import { TokenList } from "@uniswap/token-lists";
+import { TokenInfo, TokenList } from "@uniswap/token-lists";
 import fs from "fs";
 import { AddressesJsonFile } from "src/addresses/AddressesJsonFile";
 import { getAirdropInfo } from "src/tokenlist/getAirdropInfo";
@@ -33,80 +33,103 @@ export async function getTokenList(
     },
   } = addressesJson;
 
-  console.log('Generating tokenlist.json');
+  console.log("Generating tokenlist.json");
 
-  console.log('Voting');
+  console.log("Voting");
   const elementTokenInfo = await getVotingTokenInfo(chainId, elementToken);
 
-  console.log('Core Voting');
+  console.log("Core Voting");
   const coreVotingInfo = await getCoreVotingInfo(
     chainId,
     coreVoting,
     "Element Core Voting Contract"
   );
 
-  console.log('GSC Core Voting');
+  console.log("GSC Core Voting");
   const gscCoreVotingInfo = await getCoreVotingInfo(
     chainId,
     gscCoreVoting,
     "Element GSC Core Voting Contract"
   );
 
-  console.log('Locking Vault');
+  console.log("Locking Vault");
   const lockingVaultInfo = await getLockingVaultInfo(
     chainId,
     lockingVault,
     "Element Locking Vault"
   );
 
-  console.log('Vesting Vault');
+  console.log("Vesting Vault");
   const vestingVaultInfo = await getLockingVaultInfo(
     chainId,
     vestingVault,
     "Element Vesting Vault"
   );
 
-  console.log('GSC Vault');
+  console.log("GSC Vault");
   const gscVaultInfo = await getGscVaultInfo(
     chainId,
     gscVault,
     "Element Governance Steering Committee Vault"
   );
 
-  console.log('Optimistic Rewards Vault');
+  console.log("Optimistic Rewards Vault");
   const optimisticRewardsVaultInfo = await getOptimisticRewardsVaultInfo(
     chainId,
     optimisticRewardsVault,
     "Element Optimistic Rewards Vault"
   );
 
-  console.log('Optimistic Grants Vault');
-  const optimisticGrantsInfo = await getOptimisticGrantsInfo(
-    chainId,
-    optimisticGrants,
-    "Element Optimistic Grants Vault"
-  );
-
-  console.log('Airdrop');
+  console.log("Airdrop");
   const airdropInfo = await getAirdropInfo(
     chainId,
     airdropContract,
     "Element Airdrop Contract"
   );
 
-  console.log('Treasury');
-  const treasuryInfo = await getTreasuryInfo(
-    chainId,
-    treasury,
-    "Element Treasury"
-  );
-
-  console.log('Timelock');
+  console.log("Timelock");
   const timelockInfo = await getTimelockInfo(
     chainId,
     timeLock,
     "Element Timelock"
   );
+  console.log("Treasury");
+  const treasuryInfo = // TODO: deploy an treasury contract to the testnet, this is currently
+    // the zero address
+    isZeroAddress(treasury)
+      ? null
+      : await getTreasuryInfo(chainId, treasury, "Element Treasury");
+
+  console.log("Optimistic Grants Vault");
+  // TODO: deploy an optimisticGrants contract to the testnet, this is currently
+  // the zero address
+  const optimisticGrantsInfo = isZeroAddress(optimisticGrants)
+    ? null
+    : await getOptimisticGrantsInfo(
+        chainId,
+        optimisticGrants,
+        "Element Optimistic Grants Vault"
+      );
+
+  const tokens = [
+    elementTokenInfo,
+    coreVotingInfo,
+    gscCoreVotingInfo,
+    lockingVaultInfo,
+    vestingVaultInfo,
+    gscVaultInfo,
+    optimisticRewardsVaultInfo,
+    airdropInfo,
+    treasuryInfo,
+    timelockInfo,
+    optimisticGrantsInfo,
+  ] // TODO: Remove this filter once all contracts have a deployed address on the
+    // testnet
+    .filter((token): token is TokenInfo => {
+      // filter out nulls, as some tokens haven't been implemented on the testnet
+      // (optimistic grants)
+      return !!token;
+    });
 
   const tokenList: TokenList = {
     name,
@@ -117,19 +140,7 @@ export async function getTokenList(
       minor: 1,
       patch: 0,
     },
-    tokens: [
-      elementTokenInfo,
-      coreVotingInfo,
-      gscCoreVotingInfo,
-      lockingVaultInfo,
-      vestingVaultInfo,
-      gscVaultInfo,
-      optimisticRewardsVaultInfo,
-      optimisticGrantsInfo,
-      airdropInfo,
-      treasuryInfo,
-      timelockInfo,
-    ],
+    tokens: tokens,
   };
 
   const tokenListString = JSON.stringify(tokenList, null, 2);
@@ -139,4 +150,8 @@ export async function getTokenList(
   // published to the uniswap directory.  For now, just look at this file in
   // vscode and make sure there are no squiggles.
   fs.writeFileSync(outputPath, tokenListString);
+}
+
+function isZeroAddress(address: string): boolean {
+  return address === "0x0000000000000000000000000000000000000000";
 }
