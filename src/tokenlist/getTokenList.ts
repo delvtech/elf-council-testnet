@@ -33,62 +33,75 @@ export async function getTokenList(
     },
   } = addressesJson;
 
+  console.log('Generating tokenlist.json');
+
+  console.log('Voting');
   const elementTokenInfo = await getVotingTokenInfo(chainId, elementToken);
 
+  console.log('Core Voting');
   const coreVotingInfo = await getCoreVotingInfo(
     chainId,
     coreVoting,
     "Element Core Voting Contract"
   );
 
+  console.log('GSC Core Voting');
   const gscCoreVotingInfo = await getCoreVotingInfo(
     chainId,
     gscCoreVoting,
     "Element GSC Core Voting Contract"
   );
 
+  console.log('Locking Vault');
   const lockingVaultInfo = await getLockingVaultInfo(
     chainId,
     lockingVault,
     "Element Locking Vault"
   );
 
+  console.log('Vesting Vault');
   const vestingVaultInfo = await getLockingVaultInfo(
     chainId,
     vestingVault,
     "Element Vesting Vault"
   );
 
+  console.log('GSC Vault');
   const gscVaultInfo = await getGscVaultInfo(
     chainId,
     gscVault,
     "Element Governance Steering Committee Vault"
   );
 
+  console.log('Optimistic Rewards Vault');
   const optimisticRewardsVaultInfo = await getOptimisticRewardsVaultInfo(
     chainId,
     optimisticRewardsVault,
     "Element Optimistic Rewards Vault"
   );
 
+  console.log('Optimistic Grants Vault');
   const optimisticGrantsInfo = await getOptimisticGrantsInfo(
     chainId,
     optimisticGrants,
     "Element Optimistic Grants Vault"
   );
 
+  console.log('Airdrop');
   const airdropInfo = await getAirdropInfo(
     chainId,
     airdropContract,
     "Element Airdrop Contract"
   );
 
+  console.log('Treasury');
   const treasuryInfo = await getTreasuryInfo(
     chainId,
     treasury,
     "Element Treasury"
   );
 
+  console.log('Timelock');
   const timelockInfo = await getTimelockInfo(
     chainId,
     timeLock,
