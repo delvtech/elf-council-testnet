@@ -2,7 +2,7 @@ import { parseEther } from "@ethersproject/units";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BytesLike } from "ethers";
 import hre, { ethers } from "hardhat";
-import addressesJson from "src/addresses/addresses.json";
+import addressesJson from "src/addresses";
 import { getMerkleTree, hashAccount } from "src/merkle";
 import {
   CoreVoting__factory,

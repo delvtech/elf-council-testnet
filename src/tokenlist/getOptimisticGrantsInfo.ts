@@ -1,7 +1,8 @@
+import { OptimisticGrants__factory } from "elf-council-typechain";
 import { formatUnits } from "ethers/lib/utils";
 import hre from "hardhat";
 import { OptimisticsGrantsContractInfo } from "src/tokenlist/types";
-import { ERC20Permit__factory, OptimisticGrants__factory } from "types";
+import { ERC20Permit__factory } from "types";
 
 export const { provider } = hre.ethers;
 export async function getOptimisticGrantsInfo(

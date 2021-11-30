@@ -12,4 +12,5 @@ const chainName = process.env.NEXT_PUBLIC_CHAIN_NAME || "testnet";
 // dependency-cruiser, we don't need to run the app, but we need TS to compile
 // correctly, so we use a require() statement here.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-export const addressesJson: AddressesJsonFile = require(`./${chainName}.addresses.json`);
+const addressesJson: AddressesJsonFile = require(`./${chainName}.addresses.json`);
+export default addressesJson;
