@@ -1,6 +1,7 @@
 {
   "name": "elf-council-testnet",
   "version": "1.0.0",
+  "homepage": "https://github.com/element-fi/elf-council-testnet",
   "description": "",
   "dependencies": {
     "@alch/alchemy-web3": "^1.1.7",
