@@ -47,6 +47,7 @@ npm run ethernal-listen
 
 In a third terminal window run the following command to deploy the contracts:
 ```bash
+npm run build-contracts
 npm run deploy-contracts
 ```
 
