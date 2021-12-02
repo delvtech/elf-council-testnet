@@ -45,6 +45,7 @@ function writeAddressesJson(governanceContracts: GovernanceContracts) {
     chainId: 31337,
     addresses: {
       ...governanceContracts,
+      // these ones aren't deployed yet on local testnet, set to zero address
       optimisticGrants: ethers.constants.AddressZero,
       treasury: ethers.constants.AddressZero,
     },

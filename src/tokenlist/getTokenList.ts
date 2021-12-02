@@ -15,7 +15,7 @@ export async function getTokenList(
   addressesJson: AddressesJsonFile,
   name: string,
   outputPath: string
-) {
+): Promise<void> {
   const {
     chainId,
     addresses: {
@@ -26,7 +26,7 @@ export async function getTokenList(
       lockingVault,
       vestingVault,
       optimisticRewardsVault,
-      airdropContract,
+      airdrop,
       optimisticGrants,
       treasury,
       gscVault,
@@ -83,7 +83,7 @@ export async function getTokenList(
   console.log("Airdrop");
   const airdropInfo = await getAirdropInfo(
     chainId,
-    airdropContract,
+    airdrop,
     "Element Airdrop Contract"
   );
 

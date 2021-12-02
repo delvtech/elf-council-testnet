@@ -27,7 +27,7 @@ export interface GovernanceContracts {
   lockingVault: string;
   vestingVault: string;
   optimisticRewardsVault: string;
-  airdropContract: string;
+  airdrop: string;
 }
 
 export async function deployGovernanace(
@@ -183,7 +183,7 @@ export async function deployGovernanace(
     lockingVault: lockingVault.address,
     vestingVault: vestingVault.address,
     optimisticRewardsVault: optimisticRewardsVault.address,
-    airdropContract: airdropContract.address,
+    airdrop: airdropContract.address,
   };
 }
 

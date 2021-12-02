@@ -26,12 +26,9 @@
       }
     ],
 
-    // TODO: enable this!
     // This makes sure all exported functions have an explicit return type
-    "explicit-module-boundary-types": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "error",
     "@typescript-eslint/no-var-requires": "error",
     "@typescript-eslint/no-unused-vars": "warn"
   }
 }
-
