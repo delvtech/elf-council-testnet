@@ -1,15 +1,15 @@
-import { parseEther } from "@ethersproject/units";
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { BytesLike } from "ethers";
-import hre, { ethers } from "hardhat";
-import addressesJson from "src/addresses";
-import { getMerkleTree, hashAccount } from "src/merkle";
+import { parseEther } from '@ethersproject/units';
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import timelockData from 'artifacts/src/contracts/features/Timelock.sol/Timelock.json';
 import {
   CoreVoting__factory,
   LockingVault__factory,
   MockERC20__factory,
-} from "types";
-import timelockData from "artifacts/src/contracts/features/Timelock.sol/Timelock.json";
+} from 'elf-council-typechain';
+import { BytesLike } from 'ethers';
+import hre, { ethers } from 'hardhat';
+import addressesJson from 'src/addresses';
+import { getMerkleTree, hashAccount } from 'src/merkle';
 
 const FIFTY_ETHER = ethers.utils.parseEther("50");
 async function testProposal() {

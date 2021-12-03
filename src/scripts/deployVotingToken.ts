@@ -1,8 +1,9 @@
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";
-import { MockERC20__factory } from "types/factories/MockERC20__factory";
-import { MockERC20 } from "types/MockERC20";
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { MockERC20, MockERC20__factory } from 'elf-council-typechain';
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import {
+  syncContractWithEthernal,
+} from 'src/ethernal/syncContractWithEthernal';
 
 export async function deployVotingToken(
   hre: HardhatRuntimeEnvironment,

@@ -1,9 +1,10 @@
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { BigNumberish } from "ethers";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";
-import { CoreVoting } from "types/CoreVoting";
-import { CoreVoting__factory } from "types/factories/CoreVoting__factory";
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { CoreVoting, CoreVoting__factory } from 'elf-council-typechain';
+import { BigNumberish } from 'ethers';
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import {
+  syncContractWithEthernal,
+} from 'src/ethernal/syncContractWithEthernal';
 
 export async function deployCoreVoting(
   hre: HardhatRuntimeEnvironment,

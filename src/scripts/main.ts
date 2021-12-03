@@ -1,17 +1,20 @@
-import "hardhat-ethernal";
+import 'hardhat-ethernal';
 
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { ethers, Signer } from "ethers";
-import { parseEther } from "ethers/lib/utils";
-import fs from "fs";
-import hre from "hardhat";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { AddressesJsonFile } from "src/addresses/AddressesJsonFile";
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import {
+  MockERC20__factory,
+  VestingVault__factory,
+} from 'elf-council-typechain';
+import { ethers, Signer } from 'ethers';
+import { parseEther } from 'ethers/lib/utils';
+import fs from 'fs';
+import hre from 'hardhat';
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import { AddressesJsonFile } from 'src/addresses/AddressesJsonFile';
 import {
   deployGovernanace,
   GovernanceContracts,
-} from "src/scripts/deployGovernance";
-import { MockERC20__factory, VestingVault__factory } from "types";
+} from 'src/scripts/deployGovernance';
 
 async function main() {
   const signers: SignerWithAddress[] = await hre.ethers.getSigners();

@@ -1,20 +1,22 @@
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { BigNumber } from "ethers";
-import { parseEther } from "ethers/lib/utils";
-import { ethers } from "hardhat";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { Account, getMerkleTree } from "src/merkle";
-import { deployAirdrop } from "src/scripts/deployAirdrop";
-import { deployCoreVoting } from "src/scripts/deployCoreVoting";
-import { deployGSCVault } from "src/scripts/deployGSCVault";
-import { deployLockingVault } from "src/scripts/deployLockingVault";
-import { deployOptimisticRewards } from "src/scripts/deployOptimisticRewards";
-import { deployTimelock } from "src/scripts/deployTimelock";
-import { deployVestingVault } from "src/scripts/deployVestingVault";
-import { deployVotingToken } from "src/scripts/deployVotingToken";
-import { MockERC20__factory } from "types/factories/MockERC20__factory";
-import { MerkleRewards } from "types/MerkleRewards";
-import { MockERC20 } from "types/MockERC20";
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import {
+  MerkleRewards,
+  MockERC20,
+  MockERC20__factory,
+} from 'elf-council-typechain';
+import { BigNumber } from 'ethers';
+import { parseEther } from 'ethers/lib/utils';
+import { ethers } from 'hardhat';
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import { Account, getMerkleTree } from 'src/merkle';
+import { deployAirdrop } from 'src/scripts/deployAirdrop';
+import { deployCoreVoting } from 'src/scripts/deployCoreVoting';
+import { deployGSCVault } from 'src/scripts/deployGSCVault';
+import { deployLockingVault } from 'src/scripts/deployLockingVault';
+import { deployOptimisticRewards } from 'src/scripts/deployOptimisticRewards';
+import { deployTimelock } from 'src/scripts/deployTimelock';
+import { deployVestingVault } from 'src/scripts/deployVestingVault';
+import { deployVotingToken } from 'src/scripts/deployVotingToken';
 
 const FIFTY_VOTING_TOKENS = parseEther("50");
 

@@ -1,8 +1,13 @@
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
-import MerkleTree from "merkletreejs";
-import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";
-import { OptimisticRewards, OptimisticRewards__factory } from "types";
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import {
+  OptimisticRewards,
+  OptimisticRewards__factory,
+} from 'elf-council-typechain';
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import MerkleTree from 'merkletreejs';
+import {
+  syncContractWithEthernal,
+} from 'src/ethernal/syncContractWithEthernal';
 
 export async function deployOptimisticRewards(
   hre: HardhatRuntimeEnvironment,

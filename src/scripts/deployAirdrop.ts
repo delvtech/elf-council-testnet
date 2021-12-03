@@ -1,8 +1,10 @@
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
-import MerkleTree from "merkletreejs";
-import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";
-import { Airdrop, Airdrop__factory } from "types";
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { Airdrop, Airdrop__factory } from 'elf-council-typechain';
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import MerkleTree from 'merkletreejs';
+import {
+  syncContractWithEthernal,
+} from 'src/ethernal/syncContractWithEthernal';
 
 const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
 
