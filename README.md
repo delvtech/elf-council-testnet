@@ -10,23 +10,6 @@ First, some initialization, in a terminal window run:
 npm ci
 ```
 
-## To Run (without Ethernal)
-
-If you don't need to view transactions or need a contract GUI, you can simply run the following
-
-```bash
-npm start
-```
-
-That's it!
-## To Run (with Ethernal)
-
-If you don't need to view transactions or need a contract GUI, you can simply run
-
-```bash
-npm start-ethernal
-```
-
 Next, you'll have to do some Metamask set up:
   - In the terminal where you just launched the ethereum testnet, grab the private key for one of the
     addresses, usually the 2nd one that starts with 0x7099..
@@ -40,7 +23,27 @@ Next, you'll have to do some Metamask set up:
       - New RPC URL: http://localhost:8545/ (not https!)
       - Chain ID: 31337
 
-## To Run
+
+## To Run (without Ethernal)
+
+If you don't need to view transactions or need a contract GUI, you can simply run the following
+
+```bash
+npm start
+
+# you'll need a separate terminal for this
+npm run deploy-contracts
+```
+
+Next, you want to add proposals.  (see the Adding proposals section).
+
+## To Run (with Ethernal)
+
+If you don't need to view transactions or need a contract GUI, you can simply run
+
+```bash
+npm start-ethernal
+```
 
 Next, you'll need to set up an account with Ethernal. If you don't have an account, go to
 https://app.tryethernal.com to set one up and then follow the instructions:
@@ -64,8 +67,12 @@ In a third terminal window run the following command to deploy the contracts:
 npm run deploy-contracts
 ```
 
-In this same terminal window, you'll want to run this script to create some proposals.  This should
-be done AFTER delegating some of your tokens in the locking vault through the UI
+## Adding proposals
+
+You'll want to run this script to create some proposals.  If you need to test voting, then make sure
+you do this step AFTER your account has vote power.  To get vote power, deposit some of your tokens
+to the locking vault through the UI.
+
 ```bash
 # run this n times to create n dummy proposals that are linked to snapshot proposals.
 npm run test-proposal
