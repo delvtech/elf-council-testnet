@@ -1,15 +1,15 @@
-import { parseEther } from '@ethersproject/units';
-import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import timelockData from 'artifacts/src/contracts/features/Timelock.sol/Timelock.json';
+import { parseEther } from "@ethersproject/units";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import timelockInterface from "src/interfaces/Timelock.json";
 import {
   CoreVoting__factory,
   LockingVault__factory,
   MockERC20__factory,
-} from 'elf-council-typechain';
-import { BytesLike } from 'ethers';
-import hre, { ethers } from 'hardhat';
-import addressesJson from 'src/addresses';
-import { getMerkleTree, hashAccount } from 'src/merkle';
+} from "elf-council-typechain";
+import { BytesLike } from "ethers";
+import hre, { ethers } from "hardhat";
+import addressesJson from "src/addresses";
+import { getMerkleTree, hashAccount } from "src/merkle";
 
 const FIFTY_ETHER = ethers.utils.parseEther("50");
 async function testProposal() {
@@ -84,7 +84,7 @@ async function testProposal() {
 
   // for testnet we set this to 10 since blocks aren't automined.
   const newWaitTime = 10;
-  const tInterface = new ethers.utils.Interface(timelockData.abi);
+  const tInterface = new ethers.utils.Interface(timelockInterface.abi);
 
   // setup calldata for timelock's setTime function.
   const calldataTimelock = tInterface.encodeFunctionData("setWaitTime", [
@@ -151,7 +151,10 @@ testProposal()
     process.exit(1);
   });
 
-export async function createCallHash(calldata: BytesLike[], targets: string[]) {
+export async function createCallHash(
+  calldata: BytesLike[],
+  targets: string[]
+): Promise<string> {
   const toBeHashed = ethers.utils.defaultAbiCoder.encode(
     ["address[]", "bytes[]"],
     [targets, calldata]
