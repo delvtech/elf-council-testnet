@@ -7,9 +7,9 @@ import "hardhat-ethernal";
 // This adds support for typescript paths mappings
 import "tsconfig-paths/register";
 
+import { getTokenList } from "elf-council-tokenlist";
 import fs from "fs";
 import { extendEnvironment, HardhatUserConfig, task } from "hardhat/config";
-import { getTokenList } from "elf-council-tokenlist/src";
 
 const syncEthernal = Boolean(process.env.SYNC_ETHERNAL);
 extendEnvironment((hre) => {
