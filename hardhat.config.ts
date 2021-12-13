@@ -39,7 +39,7 @@ task(
   // TODO: We have to validate this json schema ourselves before it can be
   // published to the uniswap directory.  For now, just look at this file in
   // vscode and make sure there are no squiggles.
-  fs.writeFileSync("src/testnet.addresses.json", tokenListString);
+  fs.writeFileSync("src/tokenlist/testnet.tokenlist.json", tokenListString);
 });
 
 const config: HardhatUserConfig = {

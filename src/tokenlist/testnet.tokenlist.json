@@ -1,0 +1,120 @@
+{
+  "name": "Council testnet token list",
+  "logoURI": "https://element.fi/logo.svg",
+  "timestamp": "2021-12-13T20:45:57.434Z",
+  "version": {
+    "major": 0,
+    "minor": 1,
+    "patch": 0
+  },
+  "tokens": [
+    {
+      "chainId": 31337,
+      "address": "0x82e01223d51Eb87e16A03E24687EDF0F294da6f1",
+      "symbol": "ELFI",
+      "decimals": 18,
+      "name": "Element Governance Token"
+    },
+    {
+      "chainId": 31337,
+      "address": "0x2bdCC0de6bE1f7D2ee689a0342D76F52E8EFABa3",
+      "name": "Element Core Voting Contract",
+      "decimals": 0,
+      "symbol": "",
+      "extensions": {
+        "dayInBlocks": 6496,
+        "baseQuorum": 50,
+        "lockDuration": 10,
+        "minProposalPower": 50,
+        "extraVoteTime": 15
+      }
+    },
+    {
+      "chainId": 31337,
+      "address": "0xc351628EB244ec633d5f21fBD6621e1a683B1181",
+      "name": "Element GSC Core Voting Contract",
+      "decimals": 0,
+      "symbol": "",
+      "extensions": {
+        "dayInBlocks": 6496,
+        "baseQuorum": 1,
+        "lockDuration": 10,
+        "minProposalPower": 1,
+        "extraVoteTime": 15
+      }
+    },
+    {
+      "chainId": 31337,
+      "address": "0x922D6956C99E12DFeB3224DEA977D0939758A1Fe",
+      "name": "Element Locking Vault",
+      "decimals": 0,
+      "symbol": "",
+      "extensions": {
+        "token": "0x82e01223d51Eb87e16A03E24687EDF0F294da6f1",
+        "staleBlockLag": 1
+      }
+    },
+    {
+      "chainId": 31337,
+      "address": "0x5081a39b8A5f0E35a8D959395a630b68B74Dd30f",
+      "name": "Element Vesting Vault",
+      "decimals": 0,
+      "symbol": "",
+      "extensions": {
+        "token": "0x82e01223d51Eb87e16A03E24687EDF0F294da6f1",
+        "staleBlockLag": 1
+      }
+    },
+    {
+      "chainId": 31337,
+      "address": "0xB0D4afd8879eD9F52b28595d31B441D079B2Ca07",
+      "name": "Element Governance Steering Committee Vault",
+      "decimals": 0,
+      "symbol": "",
+      "extensions": {
+        "coreVoting": "0xc351628EB244ec633d5f21fBD6621e1a683B1181",
+        "votingPowerBound": 100,
+        "idleDuration": 345600
+      }
+    },
+    {
+      "chainId": 31337,
+      "address": "0xdbC43Ba45381e02825b14322cDdd15eC4B3164E6",
+      "name": "Element Optimistic Rewards Vault",
+      "decimals": 0,
+      "symbol": "",
+      "extensions": {
+        "pendingRoot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "proposalTime": 0,
+        "proposer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "challengePeriod": 604800,
+        "rewardsRoot": "0x6dc5a608f709803fbd085c6fa82f7c1def6e42c351101dbc17767d4f3262ce62",
+        "lockingVault": "0x922D6956C99E12DFeB3224DEA977D0939758A1Fe",
+        "token": "0x82e01223d51Eb87e16A03E24687EDF0F294da6f1"
+      }
+    },
+    {
+      "chainId": 31337,
+      "address": "0x04C89607413713Ec9775E14b954286519d836FEf",
+      "name": "Element Airdrop Contract",
+      "decimals": 0,
+      "symbol": "",
+      "extensions": {
+        "rewardsRoot": "0x6dc5a608f709803fbd085c6fa82f7c1def6e42c351101dbc17767d4f3262ce62",
+        "lockingVault": "0x922D6956C99E12DFeB3224DEA977D0939758A1Fe",
+        "expiration": "1670957182",
+        "token": "0x82e01223d51Eb87e16A03E24687EDF0F294da6f1"
+      }
+    },
+    {
+      "chainId": 31337,
+      "address": "0x1429859428C0aBc9C2C47C8Ee9FBaf82cFA0F20f",
+      "name": "Element Timelock",
+      "decimals": 0,
+      "symbol": "",
+      "extensions": {
+        "waitTime": "10"
+      }
+    }
+  ]
+}
