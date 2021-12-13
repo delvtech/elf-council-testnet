@@ -25,8 +25,10 @@ task(
 ).setAction(async (unusedArgs, hre) => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const addressesJson = require("src/addresses/testnet.addresses.json");
+
+  const { provider } = hre.ethers;
   const tokenList = getTokenList(
-    hre,
+    provider,
     addressesJson,
     `Council testnet token list`
   );
