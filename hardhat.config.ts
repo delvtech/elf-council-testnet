@@ -22,12 +22,12 @@ extendEnvironment((hre) => {
 task(
   "build-tokenlist",
   "Builds a council tokenlist for a single chain"
-).setAction(async (unusedArgs, hre) => {
+).setAction(async (unusedTaskArgs, hre) => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const addressesJson = require("src/addresses/testnet.addresses.json");
-
   const { provider } = hre.ethers;
-  const tokenList = getTokenList(
+
+  const tokenList = await getTokenList(
     provider,
     addressesJson,
     `Council testnet token list`
