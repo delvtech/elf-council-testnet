@@ -21,7 +21,7 @@ extendEnvironment((hre) => {
 
 task(
   "build-tokenlist",
-  "Builds a council tokenlist for a single chain"
+  "Builds a council tokenlist the local testnet"
 ).setAction(async (unusedTaskArgs, hre) => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const addressesJson = require("src/addresses/testnet.addresses.json");
