@@ -2,12 +2,10 @@ import {
   LockingVault__factory,
   SimpleProxy,
   SimpleProxy__factory,
-} from 'elf-council-typechain';
-import { BigNumberish, Signer } from 'ethers';
-import { HardhatRuntimeEnvironment } from 'hardhat/types';
-import {
-  syncContractWithEthernal,
-} from 'src/ethernal/syncContractWithEthernal';
+} from "elf-council-typechain";
+import { BigNumberish, Signer } from "ethers";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";
 
 export async function deployLockingVault(
   hre: HardhatRuntimeEnvironment,
@@ -23,9 +21,6 @@ export async function deployLockingVault(
   );
   console.log("deployed locking vault base");
 
-  // QUESTION do I need to use a wallet here?
-  // const { provider } = waffle;
-  // const [wallet] = provider.getWallets();
   const proxyDeployer = new SimpleProxy__factory(signer);
   console.log("deployed proxy vault");
   const lockingVaultProxy = await proxyDeployer.deploy(
