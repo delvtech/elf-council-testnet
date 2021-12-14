@@ -1,7 +1,4 @@
-// Default to the testnet in this repo so `npm start` Just Works without having
-// to specify it on the command line.
-
-import { AddressesJsonFile } from "src/addresses/AddressesJsonFile";
+import { AddressesJsonFile } from "elf-council-tokenlist";
 
 // TODO: Add this env variable (ie: "mainnet") to .env file when we're ready
 const chainName = process.env.NEXT_PUBLIC_CHAIN_NAME || "testnet";

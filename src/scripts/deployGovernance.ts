@@ -1,22 +1,22 @@
-import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   MerkleRewards,
   MockERC20,
   MockERC20__factory,
-} from 'elf-council-typechain';
-import { BigNumber } from 'ethers';
-import { parseEther } from 'ethers/lib/utils';
-import { ethers } from 'hardhat';
-import { HardhatRuntimeEnvironment } from 'hardhat/types';
-import { Account, getMerkleTree } from 'src/merkle';
-import { deployAirdrop } from 'src/scripts/deployAirdrop';
-import { deployCoreVoting } from 'src/scripts/deployCoreVoting';
-import { deployGSCVault } from 'src/scripts/deployGSCVault';
-import { deployLockingVault } from 'src/scripts/deployLockingVault';
-import { deployOptimisticRewards } from 'src/scripts/deployOptimisticRewards';
-import { deployTimelock } from 'src/scripts/deployTimelock';
-import { deployVestingVault } from 'src/scripts/deployVestingVault';
-import { deployVotingToken } from 'src/scripts/deployVotingToken';
+} from "elf-council-typechain";
+import { BigNumber } from "ethers";
+import { parseEther } from "ethers/lib/utils";
+import { ethers } from "hardhat";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { Account, getMerkleTree } from "src/merkle";
+import { deployAirdrop } from "src/scripts/deployAirdrop";
+import { deployCoreVoting } from "src/scripts/deployCoreVoting";
+import { deployGSCVault } from "src/scripts/deployGSCVault";
+import { deployLockingVault } from "src/scripts/deployLockingVault";
+import { deployOptimisticRewards } from "src/scripts/deployOptimisticRewards";
+import { deployTimelock } from "src/scripts/deployTimelock";
+import { deployVestingVault } from "src/scripts/deployVestingVault";
+import { deployVotingToken } from "src/scripts/deployVotingToken";
 
 const FIFTY_VOTING_TOKENS = parseEther("50");
 
@@ -29,6 +29,9 @@ export interface GovernanceContracts {
   lockingVault: string;
   vestingVault: string;
   optimisticRewardsVault: string;
+  nonFungibleVotingVault: string;
+  optimisticGrants: string;
+  treasury: string;
   airdrop: string;
 }
 
@@ -128,7 +131,7 @@ export async function deployGovernanace(
   }
 
   const merkleTree = getMerkleTree(accounts);
-  const optimisticRewardsVault = await deployOptimisticRewards(
+  const nonFungibleVotingVault = await deployOptimisticRewards(
     hre,
     signer,
     votingToken.address,
@@ -153,7 +156,7 @@ export async function deployGovernanace(
 
   // add approved governance vaults. signer is still the owner so we can set these
   await coreVoting.changeVaultStatus(lockingVault.address, true);
-  await coreVoting.changeVaultStatus(optimisticRewardsVault.address, true);
+  await coreVoting.changeVaultStatus(nonFungibleVotingVault.address, true);
   console.log("added vaults to core voting");
 
   // finalize permissions for coreVoting contract, gscCoreVoting is authorized to make proposoals
@@ -184,8 +187,11 @@ export async function deployGovernanace(
     timeLock: timeLock.address,
     lockingVault: lockingVault.address,
     vestingVault: vestingVault.address,
-    optimisticRewardsVault: optimisticRewardsVault.address,
+    optimisticRewardsVault: ethers.constants.AddressZero,
+    nonFungibleVotingVault: nonFungibleVotingVault.address,
     airdrop: airdropContract.address,
+    optimisticGrants: ethers.constants.AddressZero,
+    treasury: ethers.constants.AddressZero,
   };
 }
 
