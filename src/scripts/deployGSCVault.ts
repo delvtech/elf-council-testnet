@@ -1,8 +1,9 @@
-import { BigNumberish, Signer } from "ethers";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";
-import { GSCVault__factory } from "types/factories/GSCVault__factory";
-import { GSCVault } from "types/GSCVault";
+import { GSCVault, GSCVault__factory } from 'elf-council-typechain';
+import { BigNumberish, Signer } from 'ethers';
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import {
+  syncContractWithEthernal,
+} from 'src/ethernal/syncContractWithEthernal';
 
 export async function deployGSCVault(
   hre: HardhatRuntimeEnvironment,

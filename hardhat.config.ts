@@ -7,7 +7,9 @@ import "hardhat-ethernal";
 // This adds support for typescript paths mappings
 import "tsconfig-paths/register";
 
-import { extendEnvironment, HardhatUserConfig } from "hardhat/config";
+import { getTokenList } from "elf-council-tokenlist";
+import fs from "fs";
+import { extendEnvironment, HardhatUserConfig, task } from "hardhat/config";
 
 const syncEthernal = Boolean(process.env.SYNC_ETHERNAL);
 extendEnvironment((hre) => {
@@ -15,6 +17,29 @@ extendEnvironment((hre) => {
   hre.ethernalWorkspace = "Hardhat Network";
   // paid feature, disable for now
   hre.ethernalTrace = false;
+});
+
+task(
+  "build-tokenlist",
+  "Builds a council tokenlist the local testnet"
+).setAction(async (unusedTaskArgs, hre) => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const addressesJson = require("src/addresses/testnet.addresses.json");
+  const { provider } = hre.ethers;
+
+  const tokenList = await getTokenList(
+    provider,
+    addressesJson,
+    `Council testnet token list`
+  );
+
+  const tokenListString = JSON.stringify(tokenList, null, 2);
+  console.log(tokenListString);
+
+  // TODO: We have to validate this json schema ourselves before it can be
+  // published to the uniswap directory.  For now, just look at this file in
+  // vscode and make sure there are no squiggles.
+  fs.writeFileSync("src/tokenlist/testnet.tokenlist.json", tokenListString);
 });
 
 const config: HardhatUserConfig = {

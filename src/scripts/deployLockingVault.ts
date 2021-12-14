@@ -1,9 +1,13 @@
-import { BigNumberish, Signer } from "ethers";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";
-import { LockingVault__factory } from "types/factories/LockingVault__factory";
-import { SimpleProxy__factory } from "types/factories/SimpleProxy__factory";
-import { SimpleProxy } from "types/SimpleProxy";
+import {
+  LockingVault__factory,
+  SimpleProxy,
+  SimpleProxy__factory,
+} from 'elf-council-typechain';
+import { BigNumberish, Signer } from 'ethers';
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import {
+  syncContractWithEthernal,
+} from 'src/ethernal/syncContractWithEthernal';
 
 export async function deployLockingVault(
   hre: HardhatRuntimeEnvironment,

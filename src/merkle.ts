@@ -6,7 +6,7 @@ export interface Account {
   value: BigNumberish;
 }
 
-export function getMerkleTree(accounts: Account[]) {
+export function getMerkleTree(accounts: Account[]): MerkleTree {
   const leaves = accounts.map((account) => hashAccount(account));
   return new MerkleTree(leaves, keccak256Custom, {
     hashLeaves: false,
@@ -14,7 +14,7 @@ export function getMerkleTree(accounts: Account[]) {
   });
 }
 
-export function hashAccount(account: Account) {
+export function hashAccount(account: Account): string {
   return ethers.utils.solidityKeccak256(
     ["address", "uint256"],
     [account.address, account.value]

@@ -2,15 +2,12 @@
 
 Local testnet for developing against the elf-council contracts
 
-# Setup
+## Setup
 
 First, some initialization, in a terminal window run:
 
 ```bash
 npm ci
-npm run build-contracts
-# if you don't need/want ethernal, you can just run 'npm start'
-npm start-ethernal
 ```
 
 Next, you'll have to do some Metamask set up:
@@ -26,7 +23,27 @@ Next, you'll have to do some Metamask set up:
       - New RPC URL: http://localhost:8545/ (not https!)
       - Chain ID: 31337
 
-# To Run
+
+## To Run (without Ethernal)
+
+If you don't need to view transactions or need a contract GUI, you can simply run the following
+
+```bash
+npm start
+
+# you'll need a separate terminal for this
+npm run deploy-contracts
+```
+
+Next, you want to add proposals.  (see the Adding proposals section).
+
+## To Run (with Ethernal)
+
+If you don't need to view transactions or need a contract GUI, you can simply run
+
+```bash
+npm start-ethernal
+```
 
 Next, you'll need to set up an account with Ethernal. If you don't have an account, go to
 https://app.tryethernal.com to set one up and then follow the instructions:
@@ -47,12 +64,15 @@ npm run ethernal-listen
 
 In a third terminal window run the following command to deploy the contracts:
 ```bash
-npm run build-contracts
 npm run deploy-contracts
 ```
 
-In this same terminal window, you'll want to run this script to create some proposals.  This should
-be done AFTER delegating some of your tokens in the locking vault through the UI
+## Adding proposals
+
+You'll want to run this script to create some proposals.  If you need to test voting, then make sure
+you do this step AFTER your account has vote power.  To get vote power, deposit some of your tokens
+to the locking vault through the UI.
+
 ```bash
 # run this n times to create n dummy proposals that are linked to snapshot proposals.
 npm run test-proposal
@@ -60,7 +80,7 @@ npm run test-proposal
 
 Now the testnet is up and running.
 
-# To Reset
+## To Reset
 
 If you make code changes to the testnet, or need to restart the local testnet for any reason, then
 you'll need to reset ethernal.  to do this run:
