@@ -84,7 +84,7 @@ async function giveTreasuryVotingTokens(
     votingTokenAddress,
     tokenOwner
   );
-  tokenContract.setBalance(treasuryAddress, parseEther("50000000"));
+  tokenContract.setBalance(treasuryAddress, parseEther("5000000"));
 }
 
 async function allocateGrants(
