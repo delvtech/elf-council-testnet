@@ -33,8 +33,6 @@ export async function deployLockingVault(
     lockingVaultProxy.address
   );
 
-  console.log("deployed locking vault");
-
   await syncContractWithEthernal(
     hre,
     "LockingVault",
