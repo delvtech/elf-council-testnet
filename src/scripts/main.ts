@@ -19,13 +19,12 @@ import {
 async function main() {
   const signers: SignerWithAddress[] = await hre.ethers.getSigners();
   const [signer] = signers;
-
-  const governanceContracts = await deployGovernanace(hre, signer, signers);
-
   const accounts = signers.map((s) => s.address);
-  const { elementToken, vestingVault } = governanceContracts;
+  const governanceContracts = await deployGovernanace(hre, signer, signers);
+  const { elementToken, vestingVault, treasury } = governanceContracts;
 
   await giveAccountsVotingTokens(signer, accounts, elementToken);
+  await giveTreasuryVotingTokens(signer, treasury, elementToken);
   await allocateGrants(hre, elementToken, vestingVault, signers);
 
   console.log("accounts given voting tokens");
@@ -48,9 +47,6 @@ function writeAddressesJson(governanceContracts: GovernanceContracts) {
     chainId: 31337,
     addresses: {
       ...governanceContracts,
-      // these ones aren't deployed yet on local testnet, set to zero address
-      optimisticGrants: ethers.constants.AddressZero,
-      treasury: ethers.constants.AddressZero,
     },
   };
   const schemaAddresses = JSON.stringify(addressesJson, null, 2);
@@ -74,6 +70,18 @@ async function giveAccountsVotingTokens(
       tokenContract.setBalance(address, parseEther("50"))
     )
   );
+}
+
+async function giveTreasuryVotingTokens(
+  tokenOwner: Signer,
+  treasuryAddress: string,
+  votingTokenAddress: string
+) {
+  const tokenContract = MockERC20__factory.connect(
+    votingTokenAddress,
+    tokenOwner
+  );
+  tokenContract.setBalance(treasuryAddress, parseEther("5000000"));
 }
 
 async function allocateGrants(

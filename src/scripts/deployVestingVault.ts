@@ -1,10 +1,8 @@
-import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { VestingVault, VestingVault__factory } from 'elf-council-typechain';
-import { BigNumberish } from 'ethers';
-import { HardhatRuntimeEnvironment } from 'hardhat/types';
-import {
-  syncContractWithEthernal,
-} from 'src/ethernal/syncContractWithEthernal';
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { VestingVault, VestingVault__factory } from "elf-council-typechain";
+import { BigNumberish } from "ethers";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";
 
 export async function deployVestingVault(
   hre: HardhatRuntimeEnvironment,
@@ -18,7 +16,6 @@ export async function deployVestingVault(
     tokenAddress,
     staleBlockLag
   );
-  console.log("deployed vesting vault");
 
   await syncContractWithEthernal(
     hre,

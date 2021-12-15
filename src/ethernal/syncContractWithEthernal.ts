@@ -5,7 +5,7 @@ export async function syncContractWithEthernal(
   hre: HardhatRuntimeEnvironment,
   name: string,
   address: string
-) {
+): Promise<void> {
   if (sync) {
     try {
       await hre.ethernal.push({
