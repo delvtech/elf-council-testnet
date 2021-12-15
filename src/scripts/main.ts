@@ -19,13 +19,12 @@ import {
 async function main() {
   const signers: SignerWithAddress[] = await hre.ethers.getSigners();
   const [signer] = signers;
-
-  const governanceContracts = await deployGovernanace(hre, signer, signers);
-
   const accounts = signers.map((s) => s.address);
-  const { elementToken, vestingVault } = governanceContracts;
+  const governanceContracts = await deployGovernanace(hre, signer, signers);
+  const { elementToken, vestingVault, treasury } = governanceContracts;
 
   await giveAccountsVotingTokens(signer, accounts, elementToken);
+  await giveTreasuryVotingTokens(signer, treasury, elementToken);
   await allocateGrants(hre, elementToken, vestingVault, signers);
 
   console.log("accounts given voting tokens");
@@ -74,6 +73,18 @@ async function giveAccountsVotingTokens(
       tokenContract.setBalance(address, parseEther("50"))
     )
   );
+}
+
+async function giveTreasuryVotingTokens(
+  tokenOwner: Signer,
+  treasuryAddress: string,
+  votingTokenAddress: string
+) {
+  const tokenContract = MockERC20__factory.connect(
+    votingTokenAddress,
+    tokenOwner
+  );
+  tokenContract.setBalance(treasuryAddress, parseEther("50000000"));
 }
 
 async function allocateGrants(

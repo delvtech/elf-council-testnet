@@ -15,6 +15,7 @@ import { deployGSCVault } from "src/scripts/deployGSCVault";
 import { deployLockingVault } from "src/scripts/deployLockingVault";
 import { deployOptimisticRewards } from "src/scripts/deployOptimisticRewards";
 import { deployTimelock } from "src/scripts/deployTimelock";
+import { deployTreasury } from "src/scripts/deployTreasury";
 import { deployVestingVault } from "src/scripts/deployVestingVault";
 import { deployVotingToken } from "src/scripts/deployVotingToken";
 
@@ -110,6 +111,7 @@ export async function deployGovernanace(
     timeLock.address,
     1
   );
+  console.log("deployed locking vault");
 
   // deploy vesting vault
   const vestingVault = await deployVestingVault(
@@ -119,6 +121,7 @@ export async function deployGovernanace(
     timeLock.address,
     1
   );
+  console.log("deployed vesting vault");
 
   // give out some grants to signers[2] and signers[3]
 
@@ -150,6 +153,9 @@ export async function deployGovernanace(
     lockingVault.address
   );
   console.log("deployed airdrop contract");
+
+  const treasuryContract = await deployTreasury(hre, signer, timeLock.address);
+  console.log("deployed treasury contract");
 
   await giveRewardsVaultTokens(accounts, votingToken, signer, airdropContract);
   console.log("airdrop contract seeded with element tokens ");
@@ -191,7 +197,7 @@ export async function deployGovernanace(
     nonFungibleVotingVault: nonFungibleVotingVault.address,
     airdrop: airdropContract.address,
     optimisticGrants: ethers.constants.AddressZero,
-    treasury: ethers.constants.AddressZero,
+    treasury: treasuryContract.address,
   };
 }
 
