@@ -19,7 +19,7 @@ export async function deployVestingVault(
 
   await syncContractWithEthernal(
     hre,
-    "LockingVault",
+    "VestingVault",
     vestingVaultContract.address
   );
 
