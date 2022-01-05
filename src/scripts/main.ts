@@ -84,6 +84,7 @@ async function giveTreasuryVotingTokens(
   tokenContract.setBalance(treasuryAddress, parseEther("5000000"));
 }
 
+// give grants to signer[2] and signer[3]
 async function allocateGrants(
   hre: HardhatRuntimeEnvironment,
   grantTokenAddress: string,
@@ -119,7 +120,7 @@ async function allocateGrants(
   await (
     await vestingVaultContract.addGrantAndDelegate(
       signers[2].address,
-      parseEther("10"),
+      parseEther("50"),
       blockNumber,
       blockNumber + 100,
       50,
@@ -131,7 +132,7 @@ async function allocateGrants(
   await (
     await vestingVaultContract.addGrantAndDelegate(
       signers[3].address,
-      parseEther("10"),
+      parseEther("50"),
       blockNumber,
       blockNumber,
       0,

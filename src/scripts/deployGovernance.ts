@@ -163,6 +163,8 @@ export async function deployGovernanace(
   // add approved governance vaults. signer is still the owner so we can set these
   await coreVoting.changeVaultStatus(lockingVault.address, true);
   await coreVoting.changeVaultStatus(nonFungibleVotingVault.address, true);
+  await coreVoting.changeVaultStatus(airdropContract.address, true);
+  await coreVoting.changeVaultStatus(vestingVault.address, true);
   console.log("added vaults to core voting");
 
   // finalize permissions for coreVoting contract, gscCoreVoting is authorized to make proposoals

@@ -16,13 +16,7 @@ async function testProposal() {
   const signers: SignerWithAddress[] = await hre.ethers.getSigners();
   const [signer] = signers;
   const {
-    addresses: {
-      lockingVault,
-      optimisticRewardsVault,
-      timeLock,
-      coreVoting,
-      elementToken,
-    },
+    addresses: { lockingVault, timeLock, coreVoting, elementToken },
   } = addressesJson;
   60;
 
@@ -104,14 +98,16 @@ async function testProposal() {
       value: FIFTY_ETHER,
     })
   );
+
   const extraData = ethers.utils.defaultAbiCoder.encode(
     ["uint256", "bytes32[]"],
     [FIFTY_ETHER, proof]
   );
 
-  const votingVaults = [lockingVault, optimisticRewardsVault];
+  const votingVaults = [lockingVault];
+
   // note that lockingVault doesn't require extra data when querying vote power, so we stub with "0x00"
-  const extraVaultData = ["0x00", extraData];
+  const extraVaultData = ["0x00"];
   const targets = [timeLock];
   const ballot = 0; // yes
   const callDatas = [calldataCoreVoting];
