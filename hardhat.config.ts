@@ -9,7 +9,13 @@ import "tsconfig-paths/register";
 
 import { getTokenList } from "elf-council-tokenlist";
 import fs from "fs";
-import { extendEnvironment, HardhatUserConfig, task } from "hardhat/config";
+import {
+  extendEnvironment,
+  HardhatUserConfig,
+  task,
+  types,
+} from "hardhat/config";
+import { getDefaultProvider, providers } from "ethers";
 
 const syncEthernal = Boolean(process.env.SYNC_ETHERNAL);
 extendEnvironment((hre) => {
@@ -41,6 +47,33 @@ task(
   // vscode and make sure there are no squiggles.
   fs.writeFileSync("src/tokenlist/testnet.tokenlist.json", tokenListString);
 });
+const LOCAL_RPC_HOST = "http://127.0.0.1:8545";
+
+task("autoMine", "Mine blocks on every transaction automatically").setAction(
+  async () => {
+    const localhostProvider = new providers.JsonRpcProvider(LOCAL_RPC_HOST);
+    console.log("Disabling interval mining");
+    await localhostProvider.send("evm_setIntervalMining", [0]);
+    console.log("Enabling automine");
+    await localhostProvider.send("evm_setAutomine", [true]);
+  }
+);
+
+task("intervalMining", "Mine blocks on an interval")
+  .addOptionalParam(
+    "interval",
+    "ms interval to mine blocks at. default is 10s",
+    10000,
+    types.int
+  )
+  .setAction(async (taskArgs) => {
+    const { interval = 10000 } = taskArgs;
+    const localhostProvider = new providers.JsonRpcProvider(LOCAL_RPC_HOST);
+    console.log("Disabling automine");
+    await localhostProvider.send("evm_setAutomine", [false]);
+    console.log("Setting mining interval to", interval);
+    await localhostProvider.send("evm_setIntervalMining", [interval]);
+  });
 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
