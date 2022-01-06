@@ -54,10 +54,10 @@ export async function deployGovernanace(
     signer,
     [],
     signer.address,
-    // set quorum to 50 so any test account can pass a vote
-    50,
-    // set minProposalPower to 50 so any test account can pass a vote
-    50,
+    // set quorum to 50 ELFI so any test account can pass a vote
+    "50",
+    // set minProposalPower to 50 ELFI so any test account can make a proposal
+    "50",
     // don't care about the gsc vault yet, that will get set after we deploy the gsc vault
     ethers.constants.AddressZero,
     // can execute a proposal 10 blocks after it gets created
@@ -109,7 +109,7 @@ export async function deployGovernanace(
     signer,
     votingToken.address,
     timeLock.address,
-    1
+    10000
   );
   console.log("deployed locking vault");
 
@@ -119,7 +119,7 @@ export async function deployGovernanace(
     signer,
     votingToken.address,
     timeLock.address,
-    1
+    10000
   );
   console.log("deployed vesting vault");
 
@@ -170,21 +170,21 @@ export async function deployGovernanace(
   // finalize permissions for coreVoting contract, gscCoreVoting is authorized to make proposoals
   // without needing minimum proposal power, setting the owner to timelock so that it can execute
   // proposals.
-  await coreVoting.authorize(gscCoreVoting.address);
-  await coreVoting.setOwner(timeLock.address);
+  // await coreVoting.authorize(gscCoreVoting.address);
+  // await coreVoting.setOwner(timeLock.address);
   console.log("set permissions for core voting");
 
   // finalize permissions for timeLock contract, coreVoting is the owner so that it can post proposals
   // to the timelock.  gsc is authorized for some reason.  remove the address that deployed this contract.
-  await timeLock.deauthorize(signer.address);
-  await timeLock.authorize(gscCoreVoting.address);
-  await timeLock.setOwner(coreVoting.address);
+  // await timeLock.deauthorize(signer.address);
+  // await timeLock.authorize(gscCoreVoting.address);
+  // await timeLock.setOwner(coreVoting.address);
   console.log("set permissions for time lock contract");
 
   // finalize permissions for gscCoreVoting contract, gscVault authorized to make proposals without
   // vote.  timelock set as owner so it can execute proposals.
-  await gscCoreVoting.authorize(gscVault.address);
-  await gscCoreVoting.setOwner(timeLock.address);
+  // await gscCoreVoting.authorize(gscVault.address);
+  // await gscCoreVoting.setOwner(timeLock.address);
   console.log("set permissions for time gsc core voting");
 
   return {

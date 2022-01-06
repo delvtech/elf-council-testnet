@@ -1,80 +1,39 @@
+import { Provider } from "@ethersproject/providers";
 import { parseEther } from "@ethersproject/units";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import timelockInterface from "src/interfaces/Timelock.json";
-import {
-  CoreVoting__factory,
-  LockingVault__factory,
-  MockERC20__factory,
-} from "elf-council-typechain";
-import { BytesLike } from "ethers";
-import hre, { ethers } from "hardhat";
-import addressesJson from "src/addresses";
-import { getMerkleTree, hashAccount } from "src/merkle";
+import { CoreVoting__factory } from "elf-council-typechain";
+import { BytesLike, ethers } from "ethers";
 
-const FIFTY_ETHER = ethers.utils.parseEther("50");
-async function testProposal() {
-  const signers: SignerWithAddress[] = await hre.ethers.getSigners();
-  const [signer] = signers;
+import addressesJson from "src/addresses";
+import timelockInterface from "src/interfaces/Timelock.json";
+
+interface ProposalOptions {
+  ballot?: number;
+
+  // ether value of quorum, i.e. '50' will be 50e18
+  quorum?: string;
+
+  expired?: boolean;
+}
+
+export async function testProposal(
+  owner: SignerWithAddress,
+  provider: Provider,
+  options: ProposalOptions
+): Promise<void> {
+  // 2 is abstain
+  const { quorum, ballot = 2, expired } = options;
+
   const {
-    addresses: { lockingVault, timeLock, coreVoting, elementToken },
+    addresses: { lockingVault, timeLock, coreVoting },
   } = addressesJson;
   60;
-
-  const lockingVaultContract = LockingVault__factory.connect(
-    lockingVault,
-    signer
-  );
-
-  const elementTokenContract = MockERC20__factory.connect(elementToken, signer);
-
-  // TODO: set an actual voting power minimum in deployGovernance.  Find out what the actual
-  // required voting power is and set this conditionally if the signer doesn't have enough.
-  /********************************************************************************
-   * give the signer enough voting power to submit a proposal
-   ********************************************************************************/
-  const setBalTx = await elementTokenContract.setBalance(
-    signer.address,
-    parseEther("50")
-  );
-  await setBalTx.wait(1);
-
-  const setAllowanceTx = await elementTokenContract.setAllowance(
-    signer.address,
-    lockingVault,
-    ethers.constants.MaxUint256
-  );
-  await setAllowanceTx.wait(1);
-
-  const depositTx = await lockingVaultContract.deposit(
-    signer.address,
-    parseEther("50"),
-    signer.address
-  );
-  await depositTx.wait(1);
-  /********************************************************************************/
-
-  // TODO: lift this out, populate the tree from a leaves.json much like elf-council-merkle does or
-  // just get the actual leaves.json from that repo
-  /********************************************************************************
-   * create a merkle tree.  NOTE: this has to match exactly with the merkle tree provided by
-   * elf-council-merkle.
-   ********************************************************************************/
-  const accounts = [];
-  for (const i in signers) {
-    accounts.push({
-      address: signers[i].address,
-      value: FIFTY_ETHER,
-    });
-  }
-
-  const merkleTree = getMerkleTree(accounts);
-  /********************************************************************************/
 
   /********************************************************************************
    * Set up a new proposal.  This proposal will update the wait time for the Timelock contract.  The
    * wait time is the number of blocks that must pass before a proposal can be  executed*
    ********************************************************************************/
-  const coreVotingContract = CoreVoting__factory.connect(coreVoting, signer);
+  const coreVotingContract = CoreVoting__factory.connect(coreVoting, owner);
 
   // for testnet we set this to 10 since blocks aren't automined.
   const newWaitTime = 10;
@@ -84,6 +43,7 @@ async function testProposal() {
   const calldataTimelock = tInterface.encodeFunctionData("setWaitTime", [
     newWaitTime,
   ]);
+
   // get the callhash, this is how Timelock determines if the call is valid before it executes it
   const callHash = await createCallHash([calldataTimelock], [timeLock]);
 
@@ -92,28 +52,29 @@ async function testProposal() {
     callHash,
   ]);
 
-  const proof = merkleTree.getHexProof(
-    await hashAccount({
-      address: signers[0].address,
-      value: FIFTY_ETHER,
-    })
-  );
-
-  const extraData = ethers.utils.defaultAbiCoder.encode(
-    ["uint256", "bytes32[]"],
-    [FIFTY_ETHER, proof]
-  );
-
   const votingVaults = [lockingVault];
 
   // note that lockingVault doesn't require extra data when querying vote power, so we stub with "0x00"
   const extraVaultData = ["0x00"];
   const targets = [timeLock];
-  const ballot = 0; // yes
   const callDatas = [calldataCoreVoting];
-  const currentBlock = await hre.ethers.provider.getBlockNumber();
+  const currentBlock = await provider.getBlockNumber();
   const oneDayInBlocks = await coreVotingContract.DAY_IN_BLOCKS();
   const lastCall = oneDayInBlocks.toNumber() * 9 + currentBlock;
+
+  // record base quorum and set custom quorum if provided
+  const baseQuorum = await coreVotingContract.baseQuorum();
+  if (quorum) {
+    (await coreVotingContract.setDefaultQuorum(parseEther(quorum))).wait(1);
+  }
+
+  // record lock duration and extra vote time, set custom if provided
+  const baseLockDuration = await coreVotingContract.lockDuration();
+  const baseVoteTime = await coreVotingContract.extraVoteTime();
+  if (expired) {
+    (await coreVotingContract.setLockDuration(1)).wait(1);
+    (await coreVotingContract.changeExtraVotingTime(1)).wait(1);
+  }
 
   const tx = await coreVotingContract.proposal(
     votingVaults,
@@ -125,7 +86,26 @@ async function testProposal() {
   );
   await tx.wait(1);
 
+  // just getting the proposalId
+  const proposalCreatedEvents = await coreVotingContract.queryFilter(
+    coreVotingContract.filters.ProposalCreated(),
+    currentBlock
+  );
+  const proposalId = proposalCreatedEvents[0].args[0].toNumber();
+
+  // reset quorum to original value
+  if (quorum) {
+    (await coreVotingContract.setDefaultQuorum(baseQuorum)).wait(1);
+  }
+
+  // reset lock duration and extra vote time to to original values
+  if (expired) {
+    (await coreVotingContract.setLockDuration(baseLockDuration)).wait(1);
+    (await coreVotingContract.changeExtraVotingTime(baseVoteTime)).wait(1);
+  }
+
   const proposalArgs = [
+    ["proposalId", proposalId],
     ["votingVaults", votingVaults],
     ["extraVaultData", extraVaultData],
     ["targets", targets],
@@ -137,15 +117,6 @@ async function testProposal() {
   console.log("Proposal created with:");
   proposalArgs.forEach(([name, value]) => console.log(name, value));
 }
-
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-testProposal()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
 
 export async function createCallHash(
   calldata: BytesLike[],

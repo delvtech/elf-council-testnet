@@ -30,3 +30,17 @@ function keccak256Custom(bytes: Buffer) {
   );
   return Buffer.from(buffHash.slice(2), "hex");
 }
+
+// Examples:
+//
+// const proof = merkleTree.getHexProof(
+//   await hashAccount({
+//     address: signers[0].address,
+//     value: FIFTY_ETHER,
+//   })
+// );
+
+// const extraData = ethers.utils.defaultAbiCoder.encode(
+//   ["uint256", "bytes32[]"],
+//   [FIFTY_ETHER, proof]
+// );
