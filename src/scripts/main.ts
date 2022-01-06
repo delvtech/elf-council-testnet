@@ -3,6 +3,7 @@ import "hardhat-ethernal";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { AddressesJsonFile } from "elf-council-tokenlist";
 import {
+  LockingVault__factory,
   MockERC20__factory,
   VestingVault__factory,
 } from "elf-council-typechain";
@@ -18,16 +19,17 @@ import {
 
 async function main() {
   const signers: SignerWithAddress[] = await hre.ethers.getSigners();
-  const [signer] = signers;
+  const [owner, signer1] = signers;
   const accounts = signers.map((s) => s.address);
-  const governanceContracts = await deployGovernanace(hre, signer, signers);
-  const { elementToken, vestingVault, treasury } = governanceContracts;
+  const governanceContracts = await deployGovernanace(hre, owner, signers);
+  const { elementToken, lockingVault, vestingVault, treasury } =
+    governanceContracts;
 
-  await giveAccountsVotingTokens(signer, accounts, elementToken);
-  await giveTreasuryVotingTokens(signer, treasury, elementToken);
+  await giveVotingPowerToAccount(owner, elementToken, lockingVault);
+  await giveVotingPowerToAccount(signer1, elementToken, lockingVault);
+  await giveAccountsVotingTokens(owner, accounts, elementToken);
+  await giveTreasuryVotingTokens(owner, treasury, elementToken);
   await allocateGrants(hre, elementToken, vestingVault, signers);
-
-  console.log("accounts given voting tokens");
 
   writeAddressesJson(governanceContracts);
 }
@@ -70,6 +72,7 @@ async function giveAccountsVotingTokens(
       tokenContract.setBalance(address, parseEther("50"))
     )
   );
+  console.log("accounts given voting tokens");
 }
 
 async function giveTreasuryVotingTokens(
@@ -81,7 +84,8 @@ async function giveTreasuryVotingTokens(
     votingTokenAddress,
     tokenOwner
   );
-  tokenContract.setBalance(treasuryAddress, parseEther("5000000"));
+  await tokenContract.setBalance(treasuryAddress, parseEther("5000000"));
+  console.log("treasury given balance");
 }
 
 // give grants to signer[2] and signer[3]
@@ -140,5 +144,42 @@ async function allocateGrants(
     )
   ).wait(1);
 
-  console.log("grants given to signers[2] and signers[3]");
+  console.log("vesting grants given to signers[2] and signers[3]");
+}
+
+async function giveVotingPowerToAccount(
+  account: SignerWithAddress,
+  elementToken: string,
+  lockingVault: string
+) {
+  const lockingVaultContract = LockingVault__factory.connect(
+    lockingVault,
+    account
+  );
+
+  const elementTokenContract = MockERC20__factory.connect(
+    elementToken,
+    account
+  );
+  const setBalTx = await elementTokenContract.setBalance(
+    account.address,
+    parseEther("50")
+  );
+  await setBalTx.wait(1);
+
+  const setAllowanceTx = await elementTokenContract.setAllowance(
+    account.address,
+    lockingVault,
+    ethers.constants.MaxUint256
+  );
+  await setAllowanceTx.wait(1);
+
+  const depositTx = await lockingVaultContract.deposit(
+    account.address,
+    parseEther("50"),
+    account.address
+  );
+  await depositTx.wait(1);
+
+  console.log("50 vote power given to ", account);
 }
