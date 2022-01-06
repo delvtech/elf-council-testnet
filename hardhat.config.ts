@@ -1,3 +1,4 @@
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 // This adds ethers to the hre which has dev utilities for local testnet like 'getSigners()'
 import "@nomiclabs/hardhat-waffle";
 // Typechain support for hardhat
@@ -8,6 +9,7 @@ import "hardhat-ethernal";
 import "tsconfig-paths/register";
 
 import { getTokenList } from "elf-council-tokenlist";
+import { ethers, providers } from "ethers";
 import fs from "fs";
 import {
   extendEnvironment,
@@ -15,7 +17,11 @@ import {
   task,
   types,
 } from "hardhat/config";
-import { getDefaultProvider, providers } from "ethers";
+
+import { testProposal } from "src/scripts/testProposal";
+import { testVote } from "src/scripts/testVote";
+
+const LOCAL_RPC_HOST = "http://127.0.0.1:8545";
 
 const syncEthernal = Boolean(process.env.SYNC_ETHERNAL);
 extendEnvironment((hre) => {
@@ -47,7 +53,70 @@ task(
   // vscode and make sure there are no squiggles.
   fs.writeFileSync("src/tokenlist/testnet.tokenlist.json", tokenListString);
 });
-const LOCAL_RPC_HOST = "http://127.0.0.1:8545";
+
+task("createProposal", "Creates a new proposal")
+  .addOptionalParam(
+    "ballot",
+    "How the proposer will vote, YES (0), NO (1), MAYBE (2)",
+    2,
+    types.int
+  )
+  .addOptionalParam(
+    "expired",
+    "If the proposal should be immediately expired",
+    false,
+    types.boolean
+  )
+  .addOptionalParam(
+    "quorum",
+    "set a custom quorum value to pass the proposal",
+    undefined,
+    types.string
+  )
+  .setAction(
+    async (taskArgs: { ballot: number; expired: boolean; quorum: string }) => {
+      const { ballot, expired, quorum } = taskArgs;
+      console.log("quorum", quorum);
+      console.log("expired", expired);
+      console.log("ballot", ballot);
+      const localhostProvider = new providers.JsonRpcProvider(LOCAL_RPC_HOST);
+
+      // signer 0
+      const owner = new ethers.Wallet(
+        "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
+        localhostProvider
+      );
+
+      const ownerAddress = owner.address;
+      console.log("ownerAddress", ownerAddress);
+
+      await testProposal(
+        owner as unknown as SignerWithAddress,
+        localhostProvider,
+        {
+          ballot,
+          quorum,
+          expired,
+        }
+      );
+    }
+  );
+
+task("testVote", "tests voting").setAction(async (unusedtaskArgs) => {
+  const localhostProvider = new providers.JsonRpcProvider(LOCAL_RPC_HOST);
+
+  // signer 0
+  const owner = new ethers.Wallet(
+    "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
+    // "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"
+    localhostProvider
+  );
+
+  const ownerAddress = owner.address;
+  console.log("ownerAddress", ownerAddress);
+
+  await testVote(owner as unknown as SignerWithAddress, 4, 0);
+});
 
 task("autoMine", "Mine blocks on every transaction automatically").setAction(
   async () => {
