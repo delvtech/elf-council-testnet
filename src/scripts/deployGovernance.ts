@@ -167,6 +167,9 @@ export async function deployGovernanace(
   await coreVoting.changeVaultStatus(vestingVault.address, true);
   console.log("added vaults to core voting");
 
+  // NOTE: these are disabled right now because we need ownership of the contracts to set values
+  // such that we can create expired proposals etc. to set up the tesnet
+
   // finalize permissions for coreVoting contract, gscCoreVoting is authorized to make proposoals
   // without needing minimum proposal power, setting the owner to timelock so that it can execute
   // proposals.

@@ -33,5 +33,5 @@ export async function deployCoreVoting(
   (await coreVotingContract.setLockDuration(lockDuration)).wait(1);
   (await coreVotingContract.changeExtraVotingTime(extraVotingTime)).wait(1);
 
-  return coreVotingContract as any;
+  return coreVotingContract;
 }
