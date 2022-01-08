@@ -19,8 +19,11 @@ import {
 } from "hardhat/config";
 
 import { testProposal } from "src/scripts/testProposal";
+import { createGoerliProposal } from "src/scripts/createGoerliProposal";
 
 const LOCAL_RPC_HOST = "http://127.0.0.1:8545";
+const ALCHEMY_GOERLI_RPC_HOST =
+  "https://eth-goerli.alchemyapi.io/v2/fBuOKVPGvseZZb0h8HyPIDqtKC7nslig";
 
 const syncEthernal = Boolean(process.env.SYNC_ETHERNAL);
 extendEnvironment((hre) => {
@@ -52,6 +55,40 @@ task(
   // vscode and make sure there are no squiggles.
   fs.writeFileSync("src/tokenlist/testnet.tokenlist.json", tokenListString);
 });
+
+task("createGoerliProposal", "Creates a new proposal")
+  .addOptionalParam(
+    "ballot",
+    "How the proposer will vote, YES (0), NO (1), MAYBE (2)",
+    2,
+    types.int
+  )
+  .setAction(async (taskArgs: { ballot: number }) => {
+    const { ballot } = taskArgs;
+    console.log("ballot", ballot);
+
+    const localhostProvider = new providers.JsonRpcProvider(
+      ALCHEMY_GOERLI_RPC_HOST
+    );
+
+    // TODO: paramaterize this
+    // matt goerli airdrop test wallet with 100k vote power
+    const owner = new ethers.Wallet(
+      "0xe83fbab6dd6c0fdf2169c82811c01fa14207dfb0fba249b072a7467df0e77f8f",
+      localhostProvider
+    );
+
+    const ownerAddress = owner.address;
+    console.log("ownerAddress", ownerAddress);
+
+    await createGoerliProposal(
+      owner as unknown as SignerWithAddress,
+      localhostProvider,
+      {
+        ballot,
+      }
+    );
+  });
 
 task("createProposal", "Creates a new proposal")
   .addOptionalParam(
