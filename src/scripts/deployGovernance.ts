@@ -13,7 +13,6 @@ import { deployAirdrop } from "src/scripts/deployAirdrop";
 import { deployCoreVoting } from "src/scripts/deployCoreVoting";
 import { deployGSCVault } from "src/scripts/deployGSCVault";
 import { deployLockingVault } from "src/scripts/deployLockingVault";
-import { deployOptimisticRewards } from "src/scripts/deployOptimisticRewards";
 import { deployTimelock } from "src/scripts/deployTimelock";
 import { deployTreasury } from "src/scripts/deployTreasury";
 import { deployVestingVault } from "src/scripts/deployVestingVault";
@@ -30,7 +29,6 @@ export interface GovernanceContracts {
   lockingVault: string;
   vestingVault: string;
   optimisticRewardsVault: string;
-  nonFungibleVotingVault: string;
   optimisticGrants: string;
   treasury: string;
   airdrop: string;
@@ -134,15 +132,6 @@ export async function deployGovernanace(
   }
 
   const merkleTree = getMerkleTree(accounts);
-  const nonFungibleVotingVault = await deployOptimisticRewards(
-    hre,
-    signer,
-    votingToken.address,
-    coreVoting.address,
-    merkleTree,
-    lockingVault.address
-  );
-  console.log("deployed rewards vault");
 
   const airdropContract = await deployAirdrop(
     hre,
@@ -162,7 +151,6 @@ export async function deployGovernanace(
 
   // add approved governance vaults. signer is still the owner so we can set these
   await coreVoting.changeVaultStatus(lockingVault.address, true);
-  await coreVoting.changeVaultStatus(nonFungibleVotingVault.address, true);
   await coreVoting.changeVaultStatus(airdropContract.address, true);
   await coreVoting.changeVaultStatus(vestingVault.address, true);
   console.log("added vaults to core voting");
@@ -199,7 +187,6 @@ export async function deployGovernanace(
     lockingVault: lockingVault.address,
     vestingVault: vestingVault.address,
     optimisticRewardsVault: ethers.constants.AddressZero,
-    nonFungibleVotingVault: nonFungibleVotingVault.address,
     airdrop: airdropContract.address,
     optimisticGrants: ethers.constants.AddressZero,
     treasury: treasuryContract.address,
