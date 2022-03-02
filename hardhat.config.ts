@@ -7,6 +7,8 @@ import "hardhat-ethernal";
 // This adds support for typescript paths mappings
 import "tsconfig-paths/register";
 
+import "dotenv/config";
+
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { getTokenList } from "elf-council-tokenlist";
 import { ethers, providers } from "ethers";
@@ -21,6 +23,7 @@ import {
 import { testProposal } from "src/scripts/testProposal";
 import { createGoerliProposal } from "src/scripts/createGoerliProposal";
 
+const { PROPOSER_PRIVATE_KEY } = process.env;
 const LOCAL_RPC_HOST = "http://127.0.0.1:8545";
 const ALCHEMY_GOERLI_RPC_HOST =
   "https://eth-goerli.alchemyapi.io/v2/fBuOKVPGvseZZb0h8HyPIDqtKC7nslig";
@@ -67,16 +70,18 @@ task("createGoerliProposal", "Creates a new proposal")
     const { ballot } = taskArgs;
     console.log("ballot", ballot);
 
+    if (!PROPOSER_PRIVATE_KEY) {
+      console.log("ERROR: no private key provided for proposer");
+      return;
+    }
+
     const localhostProvider = new providers.JsonRpcProvider(
       ALCHEMY_GOERLI_RPC_HOST
     );
 
     // TODO: paramaterize this
     // matt goerli airdrop test wallet with 100k vote power
-    const owner = new ethers.Wallet(
-      "0xe83fbab6dd6c0fdf2169c82811c01fa14207dfb0fba249b072a7467df0e77f8f",
-      localhostProvider
-    );
+    const owner = new ethers.Wallet(PROPOSER_PRIVATE_KEY, localhostProvider);
 
     const ownerAddress = owner.address;
     console.log("ownerAddress", ownerAddress);
