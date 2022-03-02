@@ -70,6 +70,8 @@ export async function createGoerliProposal(
     callHash,
   ]);
 
+  // you must also vote when creating a proposal, this specifies which vaults to
+  // vote from
   const votingVaults = [vestingVault];
 
   // note that lockingVault/vestingVault doesn't require extra data when querying vote power, so we stub with "0x00"
