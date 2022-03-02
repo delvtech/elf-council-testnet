@@ -5,6 +5,10 @@ import { BytesLike, ethers } from "ethers";
 
 import timelockInterface from "src/interfaces/Timelock.json";
 
+const DAY_IN_BLOCKS = 6496;
+const YEAR_IN_DAYS = 365;
+const ONE_WEEK_IN_DAYS = 7;
+
 // TODO: get from tokenlist
 const goerliAddressList = {
   addresses: {
@@ -73,8 +77,13 @@ export async function createGoerliProposal(
   const targets = [timeLock];
   const callDatas = [calldataCoreVoting];
   const currentBlock = await provider.getBlockNumber();
+
   // set a large last call so we can execute when we want
-  const lastCall = currentBlock + 1000000;
+  // note that the extra vote time is one year right now, so setting last call to one year and one week
+  const lastCall =
+    currentBlock +
+    DAY_IN_BLOCKS * YEAR_IN_DAYS +
+    DAY_IN_BLOCKS * ONE_WEEK_IN_DAYS;
 
   /********************************************************************************
    * Create the proposal
