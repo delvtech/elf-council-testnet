@@ -25,8 +25,7 @@ import { createGoerliProposal } from "src/scripts/createGoerliProposal";
 
 const { PROPOSER_PRIVATE_KEY } = process.env;
 const LOCAL_RPC_HOST = "http://127.0.0.1:8545";
-const ALCHEMY_GOERLI_RPC_HOST =
-  "https://eth-goerli.alchemyapi.io/v2/fBuOKVPGvseZZb0h8HyPIDqtKC7nslig";
+const ALCHEMY_GOERLI_RPC_HOST = `https://eth-goerli.alchemyapi.io/v2/${process.env.ALCHEMY_GOERLI_API_KEY}`;
 
 const syncEthernal = Boolean(process.env.SYNC_ETHERNAL);
 extendEnvironment((hre) => {
@@ -204,7 +203,7 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       forking: {
-        url: "https://eth-mainnet.alchemyapi.io/v2/kwjMP-X-Vajdk1ItCfU-56Uaq1wwhamK",
+        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_MAINNET_API_KEY}`,
         blockNumber: 11853372,
       },
       accounts: {
