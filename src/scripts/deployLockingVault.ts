@@ -2,7 +2,7 @@ import {
   LockingVault__factory,
   SimpleProxy,
   SimpleProxy__factory,
-} from "elf-council-typechain";
+} from "@elementfi/elf-council-typechain";
 import { BigNumberish, Signer } from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";

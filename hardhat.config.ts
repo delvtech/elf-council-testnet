@@ -10,7 +10,7 @@ import "tsconfig-paths/register";
 import "dotenv/config";
 
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { getTokenList } from "elf-council-tokenlist";
+import { getTokenList } from "@elementfi/elf-council-tokenlist";
 import { ethers, providers } from "ethers";
 import fs from "fs";
 import {

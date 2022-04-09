@@ -1,5 +1,5 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { MockERC20, MockERC20__factory } from 'elf-council-typechain';
+import { MockERC20, MockERC20__factory } from '@elementfi/elf-council-typechain';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import {
   syncContractWithEthernal,

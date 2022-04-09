@@ -3,7 +3,7 @@ import {
   MerkleRewards,
   MockERC20,
   MockERC20__factory,
-} from "elf-council-typechain";
+} from "@elementfi/elf-council-typechain";
 import { BigNumber } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
