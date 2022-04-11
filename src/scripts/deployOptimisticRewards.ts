@@ -2,7 +2,7 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import {
   OptimisticRewards,
   OptimisticRewards__factory,
-} from 'elf-council-typechain';
+} from '@elementfi/elf-council-typechain';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import MerkleTree from 'merkletreejs';
 import {

@@ -1,5 +1,5 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { CoreVoting, CoreVoting__factory } from "elf-council-typechain";
+import { CoreVoting, CoreVoting__factory } from "@elementfi/elf-council-typechain";
 import { BigNumberish } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { HardhatRuntimeEnvironment } from "hardhat/types";

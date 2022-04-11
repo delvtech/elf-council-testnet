@@ -10,7 +10,7 @@ import "tsconfig-paths/register";
 import "dotenv/config";
 
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { getTokenList } from "elf-council-tokenlist";
+import { getTokenList } from "@elementfi/elf-council-tokenlist";
 import { ethers, providers } from "ethers";
 import fs from "fs";
 import {
@@ -23,7 +23,7 @@ import {
 import { testProposal } from "src/scripts/testProposal";
 import { createGoerliProposal } from "src/scripts/createGoerliProposal";
 
-const { PROPOSER_PRIVATE_KEY, ALCHEMY_GOERLI_API_KEY } = process.env;
+const { PROPOSER_PRIVATE_KEY } = process.env;
 const LOCAL_RPC_HOST = "http://127.0.0.1:8545";
 const ALCHEMY_GOERLI_RPC_HOST = `https://eth-goerli.alchemyapi.io/v2/${process.env.ALCHEMY_GOERLI_API_KEY}`;
 

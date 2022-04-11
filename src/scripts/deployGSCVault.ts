@@ -1,4 +1,4 @@
-import { GSCVault, GSCVault__factory } from 'elf-council-typechain';
+import { GSCVault, GSCVault__factory } from '@elementfi/elf-council-typechain';
 import { BigNumberish, Signer } from 'ethers';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import {

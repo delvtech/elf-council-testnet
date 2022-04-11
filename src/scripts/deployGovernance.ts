@@ -3,7 +3,7 @@ import {
   MerkleRewards,
   MockERC20,
   MockERC20__factory,
-} from "elf-council-typechain";
+} from "@elementfi/elf-council-typechain";
 import { BigNumber } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
@@ -17,8 +17,13 @@ import { deployTimelock } from "src/scripts/deployTimelock";
 import { deployTreasury } from "src/scripts/deployTreasury";
 import { deployVestingVault } from "src/scripts/deployVestingVault";
 import { deployVotingToken } from "src/scripts/deployVotingToken";
+import { deploySpender } from "src/scripts/deploySpender";
 
 const FIFTY_VOTING_TOKENS = parseEther("50");
+
+const SMALL_SPEND_LIMIT = parseEther("1");
+const MEDIUM_SPEND_LIMIT = parseEther("10");
+const HIGH_SPEND_LIMIT = parseEther("100");
 
 export interface GovernanceContracts {
   elementToken: string;
@@ -31,6 +36,7 @@ export interface GovernanceContracts {
   optimisticRewardsVault: string;
   optimisticGrants: string;
   treasury: string;
+  spender: string;
   airdrop: string;
 }
 
@@ -146,6 +152,17 @@ export async function deployGovernanace(
   const treasuryContract = await deployTreasury(hre, signer, timeLock.address);
   console.log("deployed treasury contract");
 
+  const spenderContract = await deploySpender(
+    hre,
+    signer,
+    timeLock.address,
+    treasuryContract.address,
+    votingToken.address,
+    SMALL_SPEND_LIMIT,
+    MEDIUM_SPEND_LIMIT,
+    HIGH_SPEND_LIMIT
+  );
+
   await giveRewardsVaultTokens(accounts, votingToken, signer, airdropContract);
   console.log("airdrop contract seeded with element tokens ");
 
@@ -190,6 +207,7 @@ export async function deployGovernanace(
     airdrop: airdropContract.address,
     optimisticGrants: ethers.constants.AddressZero,
     treasury: treasuryContract.address,
+    spender: spenderContract.address,
   };
 }
 
