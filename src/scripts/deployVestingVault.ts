@@ -1,5 +1,8 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { VestingVault, VestingVault__factory } from "@elementfi/elf-council-typechain";
+import {
+  VestingVault,
+  VestingVault__factory,
+} from "@elementfi/elf-council-typechain";
 import { BigNumberish } from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { syncContractWithEthernal } from "src/ethernal/syncContractWithEthernal";
@@ -23,7 +26,7 @@ export async function deployVestingVault(
     vestingVaultContract.address
   );
 
-  await vestingVaultContract.initialize(signer.address, timelockAddress);
+  await vestingVaultContract.initialize(signer.address, signer.address);
 
   return vestingVaultContract;
 }

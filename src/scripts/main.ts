@@ -18,6 +18,8 @@ import {
 } from "src/scripts/deployGovernance";
 
 async function main() {
+  const blockNumber = await hre.ethers.provider.getBlockNumber();
+  console.log("blockNumber", blockNumber);
   const signers: SignerWithAddress[] = await hre.ethers.getSigners();
   const [owner, signer1] = signers;
   const accounts = signers.map((s) => s.address);
@@ -105,9 +107,12 @@ async function allocateGrants(
     signers[0]
   );
 
+  // set multiplier to 5%
+  await vestingVaultContract.changeUnvestedMultiplier(5);
+
   // depsoit tokens to the vesting vault for allocating grants
   await (
-    await tokenContract.setBalance(signers[0].address, parseEther("100"))
+    await tokenContract.setBalance(signers[0].address, parseEther("200"))
   ).wait(1);
   await (
     await tokenContract.setAllowance(
@@ -116,19 +121,21 @@ async function allocateGrants(
       ethers.constants.MaxUint256
     )
   ).wait(1);
-  await (await vestingVaultContract.deposit(parseEther("100"))).wait(1);
+  await (await vestingVaultContract.deposit(parseEther("200"))).wait(1);
 
-  // grant with cliff of 50 blocks and expiration of 100 blocks
+  // grants with cliff of 50 blocks and expiration of 100 blocks:
+
+  // signer 2 is delegating to signer 1
   const provider = hre.ethers.getDefaultProvider();
   const blockNumber = await provider.getBlockNumber();
   await (
     await vestingVaultContract.addGrantAndDelegate(
       signers[2].address,
-      parseEther("50"),
+      parseEther("100"),
       blockNumber,
       blockNumber + 100,
       50,
-      signers[2].address
+      signers[1].address
     )
   ).wait(1);
 
@@ -136,7 +143,7 @@ async function allocateGrants(
   await (
     await vestingVaultContract.addGrantAndDelegate(
       signers[3].address,
-      parseEther("50"),
+      parseEther("100"),
       blockNumber,
       blockNumber,
       0,
@@ -181,5 +188,5 @@ async function giveVotingPowerToAccount(
   );
   await depositTx.wait(1);
 
-  console.log("50 vote power given to ", account);
+  console.log("50 vote power given to ", account.address);
 }

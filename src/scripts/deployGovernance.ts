@@ -195,6 +195,10 @@ export async function deployGovernanace(
   // await gscCoreVoting.setOwner(timeLock.address);
   console.log("set permissions for time gsc core voting");
 
+  // finalize permissions for vestingVault contract
+  // await vestingVault.setTimelock(timeLock.address);
+  console.log("Set permissions for vesting vault");
+
   return {
     elementToken: votingToken.address,
     coreVoting: coreVoting.address,
