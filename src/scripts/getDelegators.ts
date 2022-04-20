@@ -6,7 +6,7 @@ import {
 } from "@elementfi/elf-council-typechain";
 
 const STARTING_BLOCK_NUMBER = 14496292;
-const MAX_WHITELIST = ;
+const MAX_WHITELIST = 10_000;
 
 const oneAddress =
   "0x0000000000000000000000000000000000000000000000000000000000000001";
@@ -18,7 +18,7 @@ const lockingVault = LockingVault__factory.connect(
   provider
 );
 const vestingVault = VestingVault__factory.connect(
-  addresses.lockingVault,
+  addresses.vestingVault,
   provider
 );
 export interface WhitelistData {
@@ -34,25 +34,74 @@ export async function getDelegators(): Promise<{
   // Filters for all vote change vents
   const lockingFilter = lockingVault.filters.VoteChange(null, null, null);
   const vestingFilter = vestingVault.filters.VoteChange(null, null, null);
+  const latestBlock = await provider.getBlockNumber();
+  console.log("STARTING_BLOCK_NUMBER", STARTING_BLOCK_NUMBER);
+  console.log("latestBlock", latestBlock);
 
   // Query for events
-  const lockingEvents = await lockingVault.queryFilter(
-    lockingFilter,
-    STARTING_BLOCK_NUMBER
-  );
+  const lockingEvents = await lockingVault.queryFilter(lockingFilter);
+  console.log("lockingEvents", lockingEvents.length);
 
-  const vestingEvents = await vestingVault.queryFilter(
-    vestingFilter,
-    STARTING_BLOCK_NUMBER
-  );
+  const vestingEvents = await vestingVault.queryFilter(vestingFilter);
+  console.log("vestingEvents", vestingEvents.length);
 
   const blockNumbers: Array<number> = [];
   const whitelistSet: Set<string> = new Set();
+  const lockingWhitelistSet: Set<string> = new Set();
+  const vestingWhitelistSet: Set<string> = new Set();
   const whitelistData: Array<WhitelistData> = [];
 
   const allEvents = lockingEvents.concat(vestingEvents);
+  console.log("allEvents", allEvents.length);
+  console.log("");
   const sortedEvents = allEvents.sort(
     (eventA, eventB) => eventA.blockNumber - eventB.blockNumber
+  );
+
+  vestingEvents.forEach((event) => {
+    if (event.args) {
+      const { from } = event.args;
+      const { to } = event.args;
+      const { amount } = event.args;
+
+      if (to === oneAddress || from === oneAddress) {
+        return;
+      }
+
+      if (!amount.eq(0) && whitelistSet.size < MAX_WHITELIST) {
+        vestingWhitelistSet.add(from);
+        whitelistData.push({ address: from, block: event.blockNumber });
+        blockNumbers.push(event.blockNumber);
+      }
+    }
+  });
+
+  lockingEvents.forEach((event) => {
+    if (event.args) {
+      const { from } = event.args;
+      const { to } = event.args;
+      const { amount } = event.args;
+
+      if (to === oneAddress || from === oneAddress) {
+        return;
+      }
+
+      if (amount.gt(0) && whitelistSet.size < MAX_WHITELIST) {
+        lockingWhitelistSet.add(from);
+        whitelistData.push({ address: from, block: event.blockNumber });
+        blockNumbers.push(event.blockNumber);
+      }
+    }
+  });
+
+  console.log(
+    "locking vault whitelist",
+    Array.from(lockingWhitelistSet.values()).length
+  );
+
+  console.log(
+    "vesting vault whitelist",
+    Array.from(vestingWhitelistSet.values()).length
   );
 
   // Add valid events to whitelist
@@ -76,7 +125,7 @@ export async function getDelegators(): Promise<{
 
   const whitelist = Array.from(whitelistSet.values());
   console.log({
-    whitelist,
+    // whitelist,
     //     whitelistData,
     whitelistLength: whitelist.length,
     blockNumbers,
