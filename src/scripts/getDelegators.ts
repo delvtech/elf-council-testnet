@@ -1,3 +1,4 @@
+import fs from "fs";
 import hre from "hardhat";
 import { mainnetAddressList } from "@elementfi/elf-council-tokenlist";
 import {
@@ -131,8 +132,10 @@ export async function getDelegators(): Promise<{
     blockNumbers,
   });
 
+  fs.writeFileSync("./whitelist.json", JSON.stringify({ whitelist }, null, 2));
+
   return {
-    whitelist: Array.from(whitelistSet.values()),
+    whitelist,
     whitelistData,
     blockNumbers,
   };
