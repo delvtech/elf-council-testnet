@@ -3,12 +3,13 @@ import "hardhat-ethernal";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { AddressesJsonFile } from "@elementfi/elf-council-tokenlist";
 import {
+  GSCVault__factory,
   LockingVault__factory,
   MockERC20__factory,
   VestingVault__factory,
 } from "@elementfi/elf-council-typechain";
-import { ethers, Signer } from "ethers";
-import { parseEther } from "ethers/lib/utils";
+import { BigNumber, ethers, Signer } from "ethers";
+import { BytesLike, formatEther, parseEther } from "ethers/lib/utils";
 import fs from "fs";
 import hre from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
@@ -18,20 +19,43 @@ import {
 } from "src/scripts/deployGovernance";
 
 async function main() {
-  const blockNumber = await hre.ethers.provider.getBlockNumber();
-  console.log("blockNumber", blockNumber);
   const signers: SignerWithAddress[] = await hre.ethers.getSigners();
-  const [owner, signer1] = signers;
+  const [
+    owner,
+    signer1,
+    gscMember1,
+    gscMember2,
+    gscMember3,
+    candidate1,
+    candidate2,
+    candidate3,
+  ] = signers;
   const accounts = signers.map((s) => s.address);
   const governanceContracts = await deployGovernanace(hre, owner, signers);
-  const { elementToken, lockingVault, vestingVault, treasury } =
+  console.log("governanceContracts", governanceContracts);
+  const { elementToken, lockingVault, vestingVault, treasury, gscVault } =
     governanceContracts;
 
-  await giveVotingPowerToAccount(owner, elementToken, lockingVault);
-  await giveVotingPowerToAccount(signer1, elementToken, lockingVault);
+  await giveVotingPowerToAccount(owner, "50", elementToken, lockingVault);
+  await giveVotingPowerToAccount(signer1, "50", elementToken, lockingVault);
+  await giveVotingPowerToAccount(gscMember1, "110", elementToken, lockingVault);
+  await giveVotingPowerToAccount(gscMember2, "120", elementToken, lockingVault);
+  await giveVotingPowerToAccount(gscMember3, "130", elementToken, lockingVault);
+  await giveVotingPowerToAccount(candidate1, "90", elementToken, lockingVault);
+  await giveVotingPowerToAccount(candidate2, "80", elementToken, lockingVault);
+  await giveVotingPowerToAccount(candidate3, "70", elementToken, lockingVault);
+
   await giveAccountsVotingTokens(owner, accounts, elementToken);
+
   await giveTreasuryVotingTokens(owner, treasury, elementToken);
+
   await allocateGrants(hre, elementToken, vestingVault, signers);
+
+  await joinGSC(gscMember1, gscVault, [lockingVault], ["0x00"]);
+  await joinGSC(gscMember2, gscVault, [lockingVault], ["0x00"]);
+  await joinGSC(gscMember3, gscVault, [lockingVault], ["0x00"]);
+  await changeDelegation(gscMember3, gscMember2.address, lockingVault);
+  await kickGSC(gscMember3, gscVault);
 
   writeAddressesJson(governanceContracts);
 }
@@ -156,6 +180,7 @@ async function allocateGrants(
 
 async function giveVotingPowerToAccount(
   account: SignerWithAddress,
+  amount: string,
   elementToken: string,
   lockingVault: string
 ) {
@@ -170,7 +195,7 @@ async function giveVotingPowerToAccount(
   );
   const setBalTx = await elementTokenContract.setBalance(
     account.address,
-    parseEther("50")
+    parseEther(amount)
   );
   await setBalTx.wait(1);
 
@@ -183,10 +208,50 @@ async function giveVotingPowerToAccount(
 
   const depositTx = await lockingVaultContract.deposit(
     account.address,
-    parseEther("50"),
+    parseEther(amount),
     account.address
   );
   await depositTx.wait(1);
 
-  console.log("50 vote power given to ", account.address);
+  const latestBlock = await hre.ethers.provider.getBlockNumber();
+  const votePower: BigNumber = (await lockingVaultContract.queryVotePowerView(
+    account.address,
+    latestBlock
+  )) as unknown as BigNumber;
+
+  console.log(
+    Number(formatEther(votePower)),
+    " vote power given to ",
+    account.address
+  );
+}
+
+async function joinGSC(
+  signer: SignerWithAddress,
+  gscVaultAddress: string,
+  vaultAddresses: string[],
+  extraData: BytesLike[]
+) {
+  const gscVault = GSCVault__factory.connect(gscVaultAddress, signer);
+
+  await gscVault.proveMembership(vaultAddresses, extraData);
+}
+
+async function kickGSC(signer: SignerWithAddress, gscVaultAddress: string) {
+  const gscVault = GSCVault__factory.connect(gscVaultAddress, signer);
+
+  await gscVault.kick(signer.address, ["0x00"]);
+}
+
+async function changeDelegation(
+  account: SignerWithAddress,
+  who: string,
+  lockingVault: string
+) {
+  const lockingVaultContract = LockingVault__factory.connect(
+    lockingVault,
+    account
+  );
+
+  await lockingVaultContract.changeDelegation(who);
 }
