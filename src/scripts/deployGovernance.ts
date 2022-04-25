@@ -113,7 +113,9 @@ export async function deployGovernanace(
     signer,
     votingToken.address,
     timeLock.address,
-    10000
+    // set to 50 to make sure queryVotePower doesn't bork because there are only 60 blocks when we
+    // deploy and the stale block lag can't go below 0
+    50
   );
   console.log("deployed locking vault");
 
@@ -123,7 +125,9 @@ export async function deployGovernanace(
     signer,
     votingToken.address,
     timeLock.address,
-    10000
+    // set to 50 to make sure queryVotePower doesn't bork because there are only 60 blocks when we
+    // deploy and the stale block lag can't go below 0
+    50
   );
   console.log("deployed vesting vault");
 
@@ -171,6 +175,12 @@ export async function deployGovernanace(
   await coreVoting.changeVaultStatus(airdropContract.address, true);
   await coreVoting.changeVaultStatus(vestingVault.address, true);
   console.log("added vaults to core voting");
+
+  // add approved governance vaults. signer is still the owner so we can set these
+  await gscCoreVoting.changeVaultStatus(lockingVault.address, true);
+  await gscCoreVoting.changeVaultStatus(airdropContract.address, true);
+  await gscCoreVoting.changeVaultStatus(vestingVault.address, true);
+  console.log("added vaults to gsc core voting");
 
   // NOTE: these are disabled right now because we need ownership of the contracts to set values
   // such that we can create expired proposals etc. to set up the tesnet
