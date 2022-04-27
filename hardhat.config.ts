@@ -20,7 +20,7 @@ import {
   types,
 } from "hardhat/config";
 
-import { testProposal } from "src/scripts/testProposal";
+import { createProposal } from "src/scripts/createProposal";
 import { createGoerliProposal } from "src/scripts/createGoerliProposal";
 
 const { PROPOSER_PRIVATE_KEY } = process.env;
@@ -130,7 +130,7 @@ task("createProposal", "Creates a new proposal")
       const ownerAddress = owner.address;
       console.log("ownerAddress", ownerAddress);
 
-      await testProposal(
+      await createProposal(
         owner as unknown as SignerWithAddress,
         localhostProvider,
         {

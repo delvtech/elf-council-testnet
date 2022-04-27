@@ -16,7 +16,7 @@ interface ProposalOptions {
   expired?: boolean;
 }
 
-export async function testProposal(
+export async function createProposal(
   owner: SignerWithAddress,
   provider: Provider,
   options: ProposalOptions
