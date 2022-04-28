@@ -52,6 +52,7 @@
     "test-claiming": "npx hardhat run src/scripts/testClaiming.ts --network localhost --no-compile",
     "test-proposal": "npx hardhat run src/scripts/createProposal.ts --network localhost --no-compile",
     "create-proposals": "bash scripts/create-proposals.sh",
+    "create-gsc-proposals": "bash scripts/create-gsc-proposals.sh",
     "mine-auto": "npx hardhat autoMine",
     "mine-interval": "npx hardhat intervalMining",
     "ethernal-listen": "npx ethernal listen -l",

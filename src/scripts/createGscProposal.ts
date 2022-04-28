@@ -52,7 +52,7 @@ export async function createGscProposal(
   // get the callhash, this is how Timelock determines if the call is valid before it executes it
   const callHash = await createCallHash([callData], [gscVault]);
 
-  const votingVaults = [lockingVault];
+  const votingVaults = [gscVault];
 
   // note that lockingVault doesn't require extra data when querying vote power, so we stub with "0x00"
   const extraVaultData = ["0x00"];
