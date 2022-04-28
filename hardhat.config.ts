@@ -22,6 +22,7 @@ import {
 
 import { createProposal } from "src/scripts/createProposal";
 import { createGoerliProposal } from "src/scripts/createGoerliProposal";
+import { createGscProposal } from "src/scripts/createGscProposal";
 
 const { PROPOSER_PRIVATE_KEY } = process.env;
 const LOCAL_RPC_HOST = "http://127.0.0.1:8545";
@@ -141,6 +142,44 @@ task("createProposal", "Creates a new proposal")
       );
     }
   );
+
+task("createGscProposal", "Creates a new gsc proposal")
+  .addOptionalParam(
+    "ballot",
+    "How the proposer will vote, YES (0), NO (1), MAYBE (2)",
+    2,
+    types.int
+  )
+  .addOptionalParam(
+    "expired",
+    "If the proposal should be immediately expired",
+    false,
+    types.boolean
+  )
+  .setAction(async (taskArgs: { ballot: number; expired: boolean }) => {
+    const { ballot, expired } = taskArgs;
+    console.log("expired", expired);
+    console.log("ballot", ballot);
+    const localhostProvider = new providers.JsonRpcProvider(LOCAL_RPC_HOST);
+
+    // signer 0
+    const owner = new ethers.Wallet(
+      "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
+      localhostProvider
+    );
+
+    const ownerAddress = owner.address;
+    console.log("ownerAddress", ownerAddress);
+
+    await createGscProposal(
+      owner as unknown as SignerWithAddress,
+      localhostProvider,
+      {
+        ballot,
+        expired,
+      }
+    );
+  });
 
 task("autoMine", "Mine blocks on every transaction automatically").setAction(
   async () => {
