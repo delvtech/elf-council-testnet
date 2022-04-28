@@ -1,82 +1,76 @@
+import {
+  CoreVoting__factory,
+  GSCVault__factory,
+} from "@elementfi/elf-council-typechain";
 import { Provider } from "@ethersproject/providers";
 import { parseEther } from "@ethersproject/units";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { CoreVoting__factory } from "@elementfi/elf-council-typechain";
 import { BytesLike, ethers } from "ethers";
 
 import addressesJson from "src/addresses";
-import timelockInterface from "src/interfaces/Timelock.json";
 
-interface ProposalOptions {
+interface GscProposalOptions {
   ballot?: number;
-
-  // ether value of quorum, i.e. '50' will be 50e18
-  quorum?: string;
 
   expired?: boolean;
 }
 
-export async function createProposal(
+export async function createGscProposal(
   owner: SignerWithAddress,
   provider: Provider,
-  options: ProposalOptions
+  options: GscProposalOptions
 ): Promise<void> {
   // 2 is abstain
-  const { quorum, ballot = 2, expired } = options;
+  const { ballot = 2, expired } = options;
 
   const {
-    addresses: { lockingVault, timeLock, coreVoting },
+    addresses: { lockingVault, gscVault, gscCoreVoting },
   } = addressesJson;
   60;
 
   /********************************************************************************
-   * Set up a new proposal.  This proposal will update the wait time for the Timelock contract.  The
-   * wait time is the number of blocks that must pass before a proposal can be  executed*
+   * Set up a new proposal.  This proposal will update the votingPowerBand, or the minimum vote
+   * power required to get onto the GSC.
    ********************************************************************************/
-  const coreVotingContract = CoreVoting__factory.connect(coreVoting, owner);
+  const gscCoreVotingContract = CoreVoting__factory.connect(
+    gscCoreVoting,
+    owner
+  );
 
-  // for testnet we set this to 10 since blocks aren't automined.
-  const newWaitTime = 10;
-  const tInterface = new ethers.utils.Interface(timelockInterface.abi);
+  const gscVaultInterface = new ethers.utils.Interface(GSCVault__factory.abi);
 
-  // setup calldata for timelock's setTime function.
-  const calldataTimelock = tInterface.encodeFunctionData("setWaitTime", [
-    newWaitTime,
+  const votingPowerBound = parseEther("110");
+
+  // const gscVaultContract = GSCVault__factory.connect(gscVault, owner);
+  // gscVaultContract.setVotePowerBound(votingPowerBound);
+
+  // setup calldata for the gsc vault's setVotingPowerBound
+  const callData = gscVaultInterface.encodeFunctionData("setVotePowerBound", [
+    votingPowerBound,
   ]);
 
   // get the callhash, this is how Timelock determines if the call is valid before it executes it
-  const callHash = await createCallHash([calldataTimelock], [timeLock]);
-
-  // calldata for the coreVoting contract
-  const calldataCoreVoting = tInterface.encodeFunctionData("registerCall", [
-    callHash,
-  ]);
+  const callHash = await createCallHash([callData], [gscVault]);
 
   const votingVaults = [lockingVault];
 
   // note that lockingVault doesn't require extra data when querying vote power, so we stub with "0x00"
   const extraVaultData = ["0x00"];
-  const targets = [timeLock];
-  const callDatas = [calldataCoreVoting];
+  const targets = [gscVault];
+  const callDatas = [callData];
   const currentBlock = await provider.getBlockNumber();
-  const oneDayInBlocks = await coreVotingContract.DAY_IN_BLOCKS();
+  const oneDayInBlocks = await gscCoreVotingContract.DAY_IN_BLOCKS();
   const lastCall = oneDayInBlocks.toNumber() * 9 + currentBlock;
 
-  // record base quorum and set custom quorum if provided
-  const baseQuorum = await coreVotingContract.baseQuorum();
-  if (quorum) {
-    (await coreVotingContract.setDefaultQuorum(parseEther(quorum))).wait(1);
-  }
-
   // record lock duration and extra vote time, set custom if provided
-  const baseLockDuration = await coreVotingContract.lockDuration();
-  const baseVoteTime = await coreVotingContract.extraVoteTime();
+  const baseLockDuration = await gscCoreVotingContract.lockDuration();
+  const baseVoteTime = await gscCoreVotingContract.extraVoteTime();
   if (expired) {
-    (await coreVotingContract.setLockDuration(1)).wait(1);
-    (await coreVotingContract.changeExtraVotingTime(1)).wait(1);
+    (await gscCoreVotingContract.setLockDuration(1)).wait(1);
+    (await gscCoreVotingContract.changeExtraVotingTime(1)).wait(1);
   }
 
-  const tx = await coreVotingContract.proposal(
+  const tx = await gscCoreVotingContract.proposal(
     votingVaults,
     extraVaultData,
     targets,
@@ -87,25 +81,21 @@ export async function createProposal(
   await tx.wait(1);
 
   // just getting the proposalId
-  const proposalCreatedEvents = await coreVotingContract.queryFilter(
-    coreVotingContract.filters.ProposalCreated(),
+  const proposalCreatedEvents = await gscCoreVotingContract.queryFilter(
+    gscCoreVotingContract.filters.ProposalCreated(),
     currentBlock
   );
   const proposalId = proposalCreatedEvents[0].args[0].toNumber();
 
-  // reset quorum to original value
-  if (quorum) {
-    (await coreVotingContract.setDefaultQuorum(baseQuorum)).wait(1);
-  }
-
   // reset lock duration and extra vote time to to original values
   if (expired) {
-    (await coreVotingContract.setLockDuration(baseLockDuration)).wait(1);
-    (await coreVotingContract.changeExtraVotingTime(baseVoteTime)).wait(1);
+    (await gscCoreVotingContract.setLockDuration(baseLockDuration)).wait(1);
+    (await gscCoreVotingContract.changeExtraVotingTime(baseVoteTime)).wait(1);
   }
 
   const proposalArgs = [
     ["proposalId", proposalId],
+    ["callHash", callHash],
     ["votingVaults", votingVaults],
     ["extraVaultData", extraVaultData],
     ["targets", targets],
