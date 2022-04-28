@@ -118,7 +118,7 @@ export async function createProposal(
   proposalArgs.forEach(([name, value]) => console.log(name, value));
 }
 
-export async function createCallHash(
+async function createCallHash(
   calldata: BytesLike[],
   targets: string[]
 ): Promise<string> {

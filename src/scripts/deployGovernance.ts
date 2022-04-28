@@ -202,7 +202,7 @@ export async function deployGovernanace(
   // finalize permissions for gscCoreVoting contract, gscVault authorized to make proposals without
   // vote.  timelock set as owner so it can execute proposals.
   // await gscCoreVoting.authorize(gscVault.address);
-  // await gscCoreVoting.setOwner(timeLock.address);
+  // await gscCoreVoting.setOwner(gscVault.address);
   console.log("set permissions for time gsc core voting");
 
   // finalize permissions for vestingVault contract
