@@ -80,7 +80,7 @@ export async function deployGovernanace(
     signer.address,
     // base quorum is 1, any gsc member can pass a vote
     "1",
-    // set min proposal power to 1. this is actually checked by gscCoreVoting, it bypasses by isAuthorized
+    // min proposal power to 1, not actually checked, isAuthorized is used to bypass for gsc
     "1",
     ethers.constants.AddressZero
   );
@@ -99,7 +99,7 @@ export async function deployGovernanace(
   const gscVault = await deployGSCVault(
     hre,
     signer,
-    gscCoreVoting.address,
+    coreVoting.address,
     // any test account can get onto GSC with this much vote power
     "100",
     timeLock.address
@@ -169,15 +169,16 @@ export async function deployGovernanace(
   await giveRewardsVaultTokens(accounts, votingToken, signer, airdropContract);
   console.log("airdrop contract seeded with element tokens ");
 
-  // add approved governance vaults. signer is still the owner so we can set these
+  // add approved voting vaults. signer is still the owner so we can set these
   await coreVoting.changeVaultStatus(lockingVault.address, true);
-  await coreVoting.changeVaultStatus(airdropContract.address, true);
   await coreVoting.changeVaultStatus(vestingVault.address, true);
   console.log("added vaults to core voting");
 
+  // authorize the signer so they can create proposals later (back door for testnet scripts)
+  await gscCoreVoting.authorize(signer.address);
   // add approved governance vaults. signer is still the owner so we can set these
   await gscCoreVoting.changeVaultStatus(gscVault.address, true);
-  console.log("added gsc vault to gsc core voting");
+  console.log("added vaults to gsc core voting");
 
   // NOTE: these are disabled right now because we need ownership of the contracts to set values
   // such that we can create expired proposals etc. to set up the tesnet
