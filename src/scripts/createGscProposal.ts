@@ -24,9 +24,8 @@ export async function createGscProposal(
   const { ballot = 2, expired } = options;
 
   const {
-    addresses: { lockingVault, gscVault, gscCoreVoting },
+    addresses: { gscVault, gscCoreVoting },
   } = addressesJson;
-  60;
 
   /********************************************************************************
    * Set up a new proposal.  This proposal will update the votingPowerBand, or the minimum vote
@@ -40,9 +39,6 @@ export async function createGscProposal(
   const gscVaultInterface = new ethers.utils.Interface(GSCVault__factory.abi);
 
   const votingPowerBound = parseEther("110");
-
-  // const gscVaultContract = GSCVault__factory.connect(gscVault, owner);
-  // gscVaultContract.setVotePowerBound(votingPowerBound);
 
   // setup calldata for the gsc vault's setVotingPowerBound
   const callData = gscVaultInterface.encodeFunctionData("setVotePowerBound", [
