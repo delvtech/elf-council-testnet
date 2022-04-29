@@ -16,7 +16,7 @@ interface ProposalOptions {
   expired?: boolean;
 }
 
-export async function testProposal(
+export async function createProposal(
   owner: SignerWithAddress,
   provider: Provider,
   options: ProposalOptions
@@ -118,7 +118,7 @@ export async function testProposal(
   proposalArgs.forEach(([name, value]) => console.log(name, value));
 }
 
-export async function createCallHash(
+async function createCallHash(
   calldata: BytesLike[],
   targets: string[]
 ): Promise<string> {

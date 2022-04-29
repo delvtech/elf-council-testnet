@@ -76,12 +76,11 @@ export async function deployGovernanace(
     hre,
     signer,
     [],
-    // QUESTION: setting the signer here to the timelock owner here so I can use 'authorize' later.
-    // is this right?
+    // setting the signer here to the timelock owner here so I can use 'authorize' later.
     signer.address,
-    // what values should I be setting these to in order to test GSC powers in developmet?
-    // for now, set to 1 so that GSC can pass things easily in development
+    // base quorum is 1, any gsc member can pass a vote
     "1",
+    // min proposal power to 1, not actually checked, isAuthorized is used to bypass for gsc
     "1",
     ethers.constants.AddressZero
   );
@@ -100,7 +99,9 @@ export async function deployGovernanace(
   const gscVault = await deployGSCVault(
     hre,
     signer,
-    gscCoreVoting.address,
+    // GSC vault depends on core voting contract to get the list of verified vaults which is used to
+    // prove membership on the GSC.
+    coreVoting.address,
     // any test account can get onto GSC with this much vote power
     "100",
     timeLock.address
@@ -170,16 +171,15 @@ export async function deployGovernanace(
   await giveRewardsVaultTokens(accounts, votingToken, signer, airdropContract);
   console.log("airdrop contract seeded with element tokens ");
 
-  // add approved governance vaults. signer is still the owner so we can set these
+  // add approved voting vaults. signer is still the owner so we can set these
   await coreVoting.changeVaultStatus(lockingVault.address, true);
-  await coreVoting.changeVaultStatus(airdropContract.address, true);
   await coreVoting.changeVaultStatus(vestingVault.address, true);
   console.log("added vaults to core voting");
 
+  // authorize the signer so they can create proposals later (back door for testnet scripts)
+  await gscCoreVoting.authorize(signer.address);
   // add approved governance vaults. signer is still the owner so we can set these
-  await gscCoreVoting.changeVaultStatus(lockingVault.address, true);
-  await gscCoreVoting.changeVaultStatus(airdropContract.address, true);
-  await gscCoreVoting.changeVaultStatus(vestingVault.address, true);
+  await gscCoreVoting.changeVaultStatus(gscVault.address, true);
   console.log("added vaults to gsc core voting");
 
   // NOTE: these are disabled right now because we need ownership of the contracts to set values
@@ -200,9 +200,9 @@ export async function deployGovernanace(
   console.log("set permissions for time lock contract");
 
   // finalize permissions for gscCoreVoting contract, gscVault authorized to make proposals without
-  // vote.  timelock set as owner so it can execute proposals.
+  // vote.  gscVault set as owner so it can execute proposals.
   // await gscCoreVoting.authorize(gscVault.address);
-  // await gscCoreVoting.setOwner(timeLock.address);
+  // await gscCoreVoting.setOwner(gscVault.address);
   console.log("set permissions for time gsc core voting");
 
   // finalize permissions for vestingVault contract
