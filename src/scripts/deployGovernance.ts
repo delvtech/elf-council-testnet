@@ -99,6 +99,8 @@ export async function deployGovernanace(
   const gscVault = await deployGSCVault(
     hre,
     signer,
+    // GSC vault depends on core voting contract to get the list of verified vaults which is used to
+    // prove membership on the GSC.
     coreVoting.address,
     // any test account can get onto GSC with this much vote power
     "100",

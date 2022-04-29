@@ -36,11 +36,9 @@ export async function createGscProposal(
     owner
   );
 
-  const gscVaultInterface = new ethers.utils.Interface(GSCVault__factory.abi);
-
-  const votingPowerBound = parseEther("110");
-
   // setup calldata for the gsc vault's setVotingPowerBound
+  const gscVaultInterface = new ethers.utils.Interface(GSCVault__factory.abi);
+  const votingPowerBound = parseEther("110");
   const callData = gscVaultInterface.encodeFunctionData("setVotePowerBound", [
     votingPowerBound,
   ]);
@@ -48,6 +46,7 @@ export async function createGscProposal(
   // get the callhash, this is how Timelock determines if the call is valid before it executes it
   const callHash = await createCallHash([callData], [gscVault]);
 
+  // The GSC core voting contract only has one voting vault, which is the gscVault.
   const votingVaults = [gscVault];
 
   // note that lockingVault doesn't require extra data when querying vote power, so we stub with "0x00"
