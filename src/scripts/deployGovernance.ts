@@ -104,7 +104,8 @@ export async function deployGovernanace(
     coreVoting.address,
     // any test account can get onto GSC with this much vote power
     "100",
-    timeLock.address
+    // set owner to signer for now
+    signer.address
   );
   console.log("deployed gsc vault");
 
@@ -178,6 +179,8 @@ export async function deployGovernanace(
 
   // authorize the signer so they can create proposals later (back door for testnet scripts)
   await gscCoreVoting.authorize(signer.address);
+  // set idle duration to 1 second so that we can test voting immediately
+  await gscVault.setIdleDuration(1);
   // add approved governance vaults. signer is still the owner so we can set these
   await gscCoreVoting.changeVaultStatus(gscVault.address, true);
   console.log("added vaults to gsc core voting");
